@@ -34,3 +34,16 @@ export async function saveWizardData(data: WizardData) {
         create: data
     });
 }
+
+export async function resetWizard() {
+    const cookieStore = await cookies();
+    const dataId = cookieStore.get(WIZARD_SESSION_COOKIE)?.value;
+
+    if(dataId) {
+        await prisma.wizardData.delete({
+            where: { id: dataId }
+        })
+    }
+
+    await cookieStore.delete(WIZARD_SESSION_COOKIE);
+}
