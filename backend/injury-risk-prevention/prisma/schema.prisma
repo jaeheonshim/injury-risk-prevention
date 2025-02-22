@@ -37,4 +37,44 @@ model WizardData {
   bench Int? // Reps benched
   vertical Float? // Vertical jump
   pos Position?
+  injuries Injury[] @relation("PlayerInjuries")
+}
+
+model Injury {
+  id          String      @id @default(uuid())
+  type        InjuryType
+  season      Int
+  player      WizardData @relation("PlayerInjuries", fields: [playerId], references: [id])
+  playerId    String
+}
+
+enum InjuryType {
+  KNEE
+  ANKLE
+  HAMSTRING
+  SHOULDER
+  FOOT
+  CONCUSSION
+  GROIN
+  BACK
+  CALF
+  HIP
+  NECK
+  TOE
+  QUADRICEP
+  ELBOW
+  HAND
+  RIB
+  WRIST
+  THUMB
+  ABDOMEN
+  HEAD
+  FINGER
+  ACHILLES
+  SHIN
+  PECTORAL
+  FOREARM
+  HEEL
+  BICEPS
+  FIBULA
 }

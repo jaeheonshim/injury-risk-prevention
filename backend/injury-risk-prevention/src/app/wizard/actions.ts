@@ -1,7 +1,7 @@
 'use server'
 
 import { prisma } from "@/lib/prisma"
-import { WizardData } from "@prisma/client";
+import { Injury, WizardData } from "@prisma/client";
 import { cookies } from "next/headers"
 import Wizard from "./page";
 
@@ -19,6 +19,7 @@ export async function getWizardData() {
         where: {
             id: dataId,
         },
+        include: { injuries: true },
     });
 
     return wizardData;
@@ -33,6 +34,16 @@ export async function saveWizardData(data: WizardData) {
         update: data,
         create: data
     });
+}
+
+export async function saveInjury(data: Injury) {
+    await prisma.wizardData.create({
+        data: data
+    });
+}
+
+export async function deleteInjury(injuryId: string) {
+
 }
 
 export async function resetWizard() {

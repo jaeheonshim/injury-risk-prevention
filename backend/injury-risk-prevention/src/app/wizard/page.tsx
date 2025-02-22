@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getWizardData, resetWizard, saveWizardData } from "./actions";
-import { Position, WizardData } from "@prisma/client";
+import { Injury, InjuryType, Position, WizardData } from "@prisma/client";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
@@ -12,8 +12,9 @@ enum WizardStage {
     HEIGHT_WEIGHT = 2,
     POSITION = 3,
     COMBINE = 4,
-    REVIEW = 5,
-    COMPLETED = 6,
+    PAST_INJURIES = 5,
+    REVIEW = 6,
+    COMPLETED = 7,
 }
 
 const positionMap: Record<string, string> = {
@@ -44,7 +45,8 @@ const initialWizardState = {
     pos: null,
     forty: null,
     bench: null,
-    vertical: null
+    vertical: null,
+    injuries: []
 };
 
 export default function Wizard() {
@@ -55,11 +57,16 @@ export default function Wizard() {
     const [direction, setDirection] = useState(1);
     const [loading, setLoading] = useState<boolean>(true);
 
+    const [injuries, setInjuries] = useState<Injury[]>([]);
+    const [currentInjurySeason, setCurrentInjurySeason] = useState<number | null>();
+    const [currentInjuryType, setCurrentInjuryType] = useState<InjuryType | null>();
+
     async function loadWizardData() {
         const wizardData = await getWizardData();
 
         if (wizardData) {
             setWizardState(wizardData);
+            setInjuries(wizardData.injuries)
             setWizardStage(getWizardStage(wizardData));
         } else {
             setWizardStage(WizardStage.WELCOME);
@@ -129,6 +136,17 @@ export default function Wizard() {
                 setDirection(-1);
             }
         }
+    }
+
+    function saveCurrentInjury() {
+        setInjuries(prev => (
+            [...prev, {
+                id: crypto.randomUUID(),
+                season: currentInjurySeason!,
+                type: currentInjuryType!,
+                playerId: wizardState.id
+            }]
+        ));
     }
 
     useEffect(() => {
@@ -317,6 +335,59 @@ export default function Wizard() {
                                         className={inputClass}
                                         required
                                     />
+                                </div>
+                            )}
+
+                            {!loading && wizardStage === WizardStage.PAST_INJURIES && (
+                                <div className="mb-4">
+                                    <h3 className="text-xl font-semibold mb-2">Past Injuries</h3>
+                                    <p className="mb-4">
+                                        Your history of past injuries provides crucial insights into your overall durability and risk of future injuries. By analyzing patterns in previous injuries, we can identify potential weak points, track recovery trends, and develop strategies to minimize re-injury. Understanding your injury history helps us make smarter decisions to keep you performing at your best.
+                                    </p>
+
+                                    <div>
+                                        {injuries.map(pastInjury => (
+                                            <div key={pastInjury.id}>
+                                                {pastInjury.season} - {pastInjury.type} injury
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex flex-row">
+                                        <label htmlFor="season" className="block mb-2">Season:</label>
+                                        <input
+                                            name="season"
+                                            type="number"
+                                            placeholder="Year"
+                                            value={currentInjurySeason ?? ""}
+                                            onChange={(e) => setCurrentInjurySeason(parseInt(e.target.value))}
+                                            className={inputClass}
+                                            required
+                                        />
+
+                                        <label htmlFor="injury-type" className="block mb-2">Injury Type:</label>
+                                        <select
+                                            name="injury-type"
+                                            className={inputClass}
+                                            onChange={(e) => setCurrentInjuryType(e.target.value as InjuryType)}
+                                            required
+                                        >
+                                            <option value="">
+                                                Select type
+                                            </option>
+                                            {Object.keys(InjuryType).map((key) => (
+                                                <option key={key} value={key}>
+                                                    {key}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <button
+                                            type="button"
+                                            className="cursor-pointer bg-orange-500 hover:bg-orange-400 text-white py-2 px-4 rounded"
+                                            onClick={saveCurrentInjury}
+                                        >+</button>
+                                    </div>
                                 </div>
                             )}
 
