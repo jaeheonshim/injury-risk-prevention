@@ -403,7 +403,6 @@ export default function Wizard() {
                                                     value={currentInjurySeason ?? ""}
                                                     onChange={(e) => setCurrentInjurySeason(parseInt(e.target.value))}
                                                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
-                                                    required
                                                 />
                                             </div>
 
@@ -417,7 +416,6 @@ export default function Wizard() {
                                                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
                                                     defaultValue={currentInjuryType as InjuryType}
                                                     onChange={(e) => setCurrentInjuryType(e.target.value as InjuryType)}
-                                                    required
                                                 >
                                                     <option value="">Select type</option>
                                                     {Object.keys(InjuryType).map((key) => (
