@@ -107,7 +107,7 @@ export default function Wizard() {
         saveWizardData(wizardState).then(() => {
             if (wizardStage) {
                 if (wizardStage + 1 >= WizardStage.COMPLETED) {
-                    // done with the wizard!
+                    router.push('/results'); // Navigate to the results page
                 } else {
                     setWizardStage(wizardStage + 1);
                     setDirection(1);
@@ -178,19 +178,19 @@ export default function Wizard() {
                     <form action={nextStage} className="flex flex-col h-full">
                         <div className="flex-grow">
                             {loading && (
-                                <p>
-                                    Loading... (this indicator should be replaced with an overlay)
-                                </p>
-                            )}
-
-                            {wizardStage === WizardStage.WELCOME && (
-                                <div>
-                                    <h2 className="text-2xl font-bold mb-4">Welcome to the wizard!</h2>
-                                    <p className="mb-4">Need some info here on what this is for, etc.</p>
+                                <div className="flex justify-center items-center h-full">
+                                    <div className="spinner"></div>
                                 </div>
                             )}
 
-                            {wizardStage === WizardStage.AGE && (
+                            {!loading && wizardStage === WizardStage.WELCOME && (
+                                <div className="text-center">
+                                    <h2 className="text-2xl font-bold mb-4">Welcome to your very own personal assistant!</h2>
+                                    <p className="mb-4">We are here to help you prevent injuries!</p>
+                                </div>
+                            )}
+
+                            {!loading && wizardStage === WizardStage.AGE && (
                                 <div className="mb-4">
                                     <h3 className="text-xl font-semibold mb-2">Personal Information</h3>
                                     <label htmlFor="age" className="block mb-2">What is your age?</label>
@@ -206,7 +206,7 @@ export default function Wizard() {
                                 </div>
                             )}
 
-                            {wizardStage === WizardStage.HEIGHT_WEIGHT && (
+                            {!loading && wizardStage === WizardStage.HEIGHT_WEIGHT && (
                                 <div className="mb-4">
                                     <h3 className="text-xl font-semibold mb-2">Physical Attributes</h3>
                                     <label htmlFor="height" className="block mb-2">Height:</label>
@@ -254,7 +254,7 @@ export default function Wizard() {
                                 </div>
                             )}
 
-                            {wizardStage === WizardStage.POSITION && (
+                            {!loading && wizardStage === WizardStage.POSITION && (
                                 <div className="mb-4">
                                     <h3 className="text-xl font-semibold mb-2">Position</h3>
                                     <label htmlFor="position" className="block mb-2">What is your position?</label>
@@ -275,7 +275,7 @@ export default function Wizard() {
                                 </div>
                             )}
 
-                            {wizardStage === WizardStage.COMBINE && (
+                            {!loading && wizardStage === WizardStage.COMBINE && (
                                 <div className="mb-4">
                                     <h3 className="text-xl font-semibold mb-2">Player Physical Profile</h3>
                                     <p className="mb-4">
@@ -320,7 +320,7 @@ export default function Wizard() {
                                 </div>
                             )}
 
-                            {wizardStage === WizardStage.REVIEW && (
+                            {!loading && wizardStage === WizardStage.REVIEW && (
                                 <div className="mb-4">
                                     <h3 className="text-xl font-semibold mb-2">Review Your Information</h3>
                                     <p className="mb-4">Please review your information before submitting:</p>
@@ -328,7 +328,7 @@ export default function Wizard() {
                                         <strong>Age:</strong> {wizardState.age}
                                     </div>
                                     <div className="mb-2">
-                                        <strong>Height:</strong> {wizardState.height !== null ? `${Math.floor(wizardState.height / 12)} ft ${wizardState.height % 12} in` : "N/A"}
+                                        <strong>Height:</strong> {Math.floor((wizardState.height ?? 0) / 12)} ft {(wizardState.height ?? 0) % 12} in
                                     </div>
                                     <div className="mb-2">
                                         <strong>Weight:</strong> {wizardState.weight} lbs
