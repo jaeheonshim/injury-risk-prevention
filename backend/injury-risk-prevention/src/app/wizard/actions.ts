@@ -1,7 +1,9 @@
 'use server'
 
 import { prisma } from "@/lib/prisma"
+import { WizardData } from "@prisma/client";
 import { cookies } from "next/headers"
+import Wizard from "./page";
 
 const WIZARD_SESSION_COOKIE = 'wizard_session_id';
 
@@ -20,4 +22,15 @@ export async function getWizardData() {
     });
 
     return wizardData;
+}
+
+export async function saveWizardData(data: WizardData) {
+    const cookieStore = await cookies();
+    cookieStore.set(WIZARD_SESSION_COOKIE, data.id);
+
+    await prisma.wizardData.upsert({
+        where: { id: data.id },
+        update: data,
+        create: data
+    });
 }

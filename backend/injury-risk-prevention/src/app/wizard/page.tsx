@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getWizardData } from "./actions";
-import { WizardData } from "@prisma/client";
+import { getWizardData, saveWizardData } from "./actions";
+import { Position, WizardData } from "@prisma/client";
 import { randomUUID } from "crypto";
-import "./wizard.css";
 
 enum WizardStage {
     WELCOME = 0,
@@ -14,34 +13,53 @@ enum WizardStage {
     COMPLETED = 4,
 }
 
-function WelcomeStage({ nextStage }: { nextStage: () => void }) {
-    return (
-        <div>
-            <h2>Welcome to the wizard!</h2>
-            <button onClick={() => nextStage()}>Next</button>
-        </div>
-    );
-}
+const positionMap: Record<string, string> = {
+    C: "Center",
+    LS: "Long Snapper",
+    LB: "Line Backer",
+    RB: "Running Back",
+    G: "Guard",
+    WR: "Wide Receiver",
+    CB: "Corner Back",
+    DE: "Defensive End",
+    TE: "Tight End",
+    S: "Safety",
+    DT: "Defensive Tackle",
+    K: "Kicker",
+    P: "Punter",
+    QB: "Quarterback",
+    T: "Offensive Tackle"
+};
 
 export default function Wizard() {
-    const [wizardState, setWizardState] = useState<WizardData>();
-    const [wizardStage, setWizardStage] = useState<WizardStage>(WizardStage.WELCOME);
+    const [wizardState, setWizardState] = useState<WizardData>({
+        id: crypto.randomUUID(),
+        age: null,
+        height: null,
+        weight: null,
+        pos: null
+    });
+    const [wizardStage, setWizardStage] = useState<WizardStage>();
+    const [loading, setLoading] = useState<boolean>(true);
 
     async function loadWizardData() {
         const wizardData = await getWizardData();
+
         if(wizardData) {
             setWizardState(wizardData);
             setWizardStage(getWizardStage(wizardData));
         } else {
-            setWizardState({
-                id: crypto.randomUUID(),
-                age: null,
-                height: null,
-                weight: null,
-                pos: null
-            });
             setWizardStage(WizardStage.WELCOME);
         }
+
+        setLoading(false);
+    }
+
+    function setWizardStateProperty<T extends keyof WizardData>(property: T, value: WizardData[T]) {
+        setWizardState(prevState => ({
+            ...prevState,
+            [property]: value
+        }));
     }
 
     function getWizardStage(wizardData: WizardData) {
@@ -58,15 +76,29 @@ export default function Wizard() {
         return WizardStage.COMPLETED;
     }
 
-    function nextStage(formData: FormData) {
-        if(wizardStage) {
-            if(wizardStage + 1 >= WizardStage.COMPLETED) {
-                // done with the wizard!
+    function nextStage() {
+        setLoading(true);
+
+        saveWizardData(wizardState).then(() => {
+            if(wizardStage) {
+                if(wizardStage + 1 >= WizardStage.COMPLETED) {
+                    // done with the wizard!
+                } else {
+                    setWizardStage(wizardStage + 1);
+                }
             } else {
-                setWizardStage(wizardStage + 1);
+                setWizardStage(WizardStage.AGE);
             }
-        } else {
-            setWizardStage(WizardStage.AGE);
+        }).catch(e => {
+            alert(e);
+        }).finally(() => {
+            setLoading(false);
+        })
+    }
+
+    function prevStage() {
+        if(wizardStage) {
+            if(wizardStage - 1 > WizardStage.WELCOME) setWizardStage(wizardStage - 1);
         }
     }
 
@@ -78,35 +110,89 @@ export default function Wizard() {
     return <div className="wizard-container">
         <h2>Welcome to the wizard!</h2>
         <form action={nextStage}>
+            {loading &&
+            <p>
+                Loading... (this indicator should be replaced with an overlay)
+            </p>
+            }
+
             { wizardStage === WizardStage.WELCOME && 
                 <div>
-                    <button type="submit">Let's get started!</button>
+
                 </div>
             }
 
-            { wizardStage === WizardStage.AGE && 
+            {wizardStage === WizardStage.AGE && (
                 <div>
-                    First, what is your age?
-                    <input type="number" />
-                    <button type="submit">Next</button>
+                    <label htmlFor="age">What is your age?</label>
+                    <input
+                        type="number"
+                        name="age"
+                        min="0"
+                        value={wizardState.age ?? ""}
+                        onChange={(e) => setWizardStateProperty("age", Number(e.target.value))}
+                        required
+                    />
                 </div>
-            }
+            )}
 
-            { wizardStage === WizardStage.HEIGHT_WEIGHT && 
+            {wizardStage === WizardStage.HEIGHT_WEIGHT && (
                 <div>
-                    what is your height and weight?
-                    {/* Add appropriate fields here */}
-                    <button type="submit">Next</button>
+                    <label htmlFor="height">Height:</label>
+                    <input
+                        type="number"
+                        name="heightFeet"
+                        min="0"
+                        placeholder="ft"
+                        value={wizardState.height ? Math.floor(wizardState.height / 12) : ""}
+                        onChange={(e) => {
+                            const feet = Number(e.target.value) * 12;
+                            const inches = wizardState.height ? wizardState.height % 12 : 0;
+                            setWizardStateProperty("height", feet + inches);
+                        }}
+                    />
+                    <input
+                        type="number"
+                        name="heightInches"
+                        min="0"
+                        max="11"
+                        placeholder="in"
+                        value={wizardState.height ? wizardState.height % 12 : ""}
+                        onChange={(e) => {
+                            const inches = Number(e.target.value);
+                            const feet = wizardState.height ? Math.floor(wizardState.height / 12) * 12 : 0;
+                            setWizardStateProperty("height", feet + inches);
+                        }}
+                    />
+                    <label htmlFor="weight">Weight (lbs):</label>
+                    <input
+                        name="weight"
+                        type="number"
+                        min="0"
+                        value={wizardState.weight ?? ""}
+                        onChange={(e) => setWizardStateProperty("weight", Number(e.target.value))}
+                    />
                 </div>
-            }
+            )}
 
             { wizardStage === WizardStage.POSITION && 
                 <div>
-                    what is your position?
-                    {/* We need a dropdown here with the football positions */}
-                    <button type="submit">Next</button>
+                    <label htmlFor="position">What is your position?</label>
+                    <select name="position"
+                        defaultValue={wizardState.pos ?? ""}
+                        onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
+                    >
+                        <option value="">Select your position</option>
+                        {Object.keys(Position).map((key) => (
+                            <option key={key} value={key}>{positionMap[key]} ({key})</option>
+                        ))}
+                    </select>
                 </div>
             }
+            
+            <button type="button">Start Over</button>
+            <button type="button" onClick={prevStage} disabled={(wizardStage ?? 0) <= WizardStage.AGE}>Back</button> 
+            <button type="submit">Next</button>
         </form>
     </div>
 }
