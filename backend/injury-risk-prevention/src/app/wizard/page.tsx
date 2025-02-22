@@ -61,10 +61,11 @@ export default function Wizard() {
     const [currentInjuryType, setCurrentInjuryType] = useState<InjuryType | null>();
 
     async function loadWizardData() {
-        const wizardData = await getWizardData();
+        const wizardData: any = await getWizardData();
+        const { injuries, ...wizardDataWithoutInjuries } = wizardData;
 
         if (wizardData) {
-            setWizardState(wizardData);
+            setWizardState(wizardDataWithoutInjuries);
             setInjuries(wizardData.injuries)
             setWizardStage(getWizardStage(wizardData));
         } else {
