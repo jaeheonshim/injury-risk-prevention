@@ -201,6 +201,7 @@ export default function Wizard() {
                                                 setWizardStateProperty("height", feet + inches);
                                             }}
                                             className={inputClass + " w-full"}
+                                            required
                                         />
                                         <input
                                             type="number"
@@ -215,6 +216,7 @@ export default function Wizard() {
                                                 setWizardStateProperty("height", feet + inches);
                                             }}
                                             className={inputClass + " w-full"}
+                                            required
                                         />
                                     </div>
                                     <label htmlFor="weight" className="block mb-2">Weight (lbs):</label>
@@ -225,6 +227,7 @@ export default function Wizard() {
                                         value={wizardState.weight ?? ""}
                                         onChange={(e) => setWizardStateProperty("weight", Number(e.target.value))}
                                         className={inputClass}
+                                        required
                                     />
                                 </div>
                             )}
@@ -245,6 +248,7 @@ export default function Wizard() {
                                     value={wizardState.forty ?? ""}
                                     onChange={(e) => setWizardStateProperty("forty", Number(e.target.value))}
                                     className={inputClass}
+                                    required
                                 />
 
                                 <label htmlFor="bench" className="block mb-2">Reps benched:</label>
@@ -256,6 +260,7 @@ export default function Wizard() {
                                     value={wizardState.bench ?? ""}
                                     onChange={(e) => setWizardStateProperty("bench", Number(e.target.value))}
                                     className={inputClass}
+                                    required
                                 />
 
                                 <label htmlFor="vertical" className="block mb-2">Vertical Jump:</label>
@@ -267,6 +272,7 @@ export default function Wizard() {
                                     value={wizardState.vertical ?? ""}
                                     onChange={(e) => setWizardStateProperty("vertical", Number(e.target.value))}
                                     className={inputClass}
+                                    required
                                 />
                             </div>
                         )}
@@ -280,6 +286,7 @@ export default function Wizard() {
                                     defaultValue={wizardState.pos ?? ""}
                                     onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
                                     className={inputClass + " w-full"}
+                                    required
                                 >
                                     <option value="">Select your position</option>
                                     {Object.keys(Position).map((key) => (
