@@ -10,21 +10,48 @@ const Home: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-            <section className="w-full max-w-4xl p-8 bg-white rounded-lg shadow-lg text-center">
-                <h1 className="text-4xl font-bold text-gray-900 mb-6">Welcome to Injury Risk Prevention</h1>
-                <p className="text-gray-700 mb-8">
-                    Dive into the exhilarating world of injury risk prevention with our dynamic and electrifying assessment tool designed exclusively for those who live for the rush of the game.
-                </p>
-                <button
-                    onClick={navigateToWizard}
-                    className="bg-orange-500 text-white font-bold py-3 px-6 rounded hover:bg-orange-400 transition duration-300"
-                >
-                    Take your injury assessment today!
-                </button>
-            </section>
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+            <nav className="w-full bg-blue-900 text-white py-4 px-8 flex justify-between items-center shadow-md">
+                <h1 className="text-2xl font-bold">Injury Risk Prevention</h1>
+                <div>
+                    {/* Add navigation links here if needed */}
+                </div>
+            </nav>
+            <div className="flex-grow flex items-center justify-center">
+                <div className="w-full h-full flex flex-col md:flex-row items-center justify-center bg-white">
+                    <div className="md:w-1/2 h-full flex items-center justify-center">
+                        <div className="p-8">
+                            <picture className="block mb-4">
+                                <source media="(max-width: 600px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/models1.jpg" />
+                                <source media="(min-width: 601px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/models1.jpg" />
+                                <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/models1.jpg" alt="model" className="w-full h-auto shadow-lg rounded-lg" />
+                            </picture>
+                            <picture className="block">
+                                <source media="(max-width: 600px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/shoes2.jpg" />
+                                <source media="(min-width: 601px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/shoes2.jpg" />
+                                <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/shoes2.jpg" alt="shoes" className="w-full h-auto shadow-lg rounded-lg" />
+                            </picture>
+                        </div>
+                    </div>
+                    <div className="md:w-1/2 h-full flex items-center justify-center">
+                        <div className="p-8">
+                            <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to Injury Risk Prevention</h1>
+                            <p className="text-gray-700 mb-8">
+                                Dive into the exhilarating world of injury risk prevention with our dynamic and electrifying assessment tool designed exclusively for those who live for the rush of the game.
+                            </p>
+                            <button
+                                onClick={navigateToWizard}
+                                className="bg-orange-500 text-white font-bold py-3 px-6 rounded hover:bg-orange-400 transition duration-300"
+                            >
+                                Take your injury assessment today!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
 
-export default Home
+export default Home;
+
