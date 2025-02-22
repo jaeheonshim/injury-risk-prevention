@@ -310,6 +310,19 @@ export default function Wizard() {
                                     />
                                 </div>
                             )}
+
+                            {wizardStage === WizardStage.COMPLETED && (
+                                <div className="mb-4">
+                                    <h6>Is this correct?</h6>
+                                    <p>Age: {wizardState.age}</p>
+                                    <p>Position: {wizardState.pos && (positionMap[wizardState.pos])} ({wizardState.pos})</p>
+                                    <p>Height: {wizardState.height && Math.floor(wizardState.height/12)} ft {wizardState.height && (wizardState.height%12)} in</p>
+                                    <p>Weight: {wizardState.weight} pounds</p>
+                                    <p>40-yard dash: {wizardState.forty} seconds</p>
+                                    <p>225 bench: {wizardState.bench} rep(s)</p>
+                                    <p>Vertical Jump: {wizardState.vertical} inches</p>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex justify-between">
