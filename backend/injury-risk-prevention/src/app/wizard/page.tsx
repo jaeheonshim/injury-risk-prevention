@@ -62,9 +62,9 @@ export default function Wizard() {
 
     async function loadWizardData() {
         const wizardData: any = await getWizardData();
-        const { injuries, ...wizardDataWithoutInjuries } = wizardData;
-
+        
         if (wizardData) {
+            const { injuries, ...wizardDataWithoutInjuries } = wizardData;
             setWizardState(wizardDataWithoutInjuries);
             setInjuries(wizardData.injuries)
             setWizardStage(getWizardStage(wizardData));
