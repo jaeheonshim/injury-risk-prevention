@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getWizardData, saveWizardData } from "./actions";
+import { getWizardData, resetWizard, saveWizardData } from "./actions";
 import { Position, WizardData } from "@prisma/client";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 enum WizardStage {
     WELCOME = 0,
@@ -34,17 +35,21 @@ const positionMap: Record<string, string> = {
 
 const inputClass = "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400";
 
+const initialWizardState = {
+    id: crypto.randomUUID(),
+    age: null,
+    height: null,
+    weight: null,
+    pos: null,
+    forty: null,
+    bench: null,
+    vertical: null
+};
+
 export default function Wizard() {
-    const [wizardState, setWizardState] = useState<WizardData>({
-        id: crypto.randomUUID(),
-        age: null,
-        height: null,
-        weight: null,
-        pos: null,
-        forty: null,
-        bench: null,
-        vertical: null
-    });
+    const router = useRouter();
+
+    const [wizardState, setWizardState] = useState<WizardData>(initialWizardState);
     const [wizardStage, setWizardStage] = useState<WizardStage>();
     const [direction, setDirection] = useState(1);
     const [loading, setLoading] = useState<boolean>(true);
@@ -79,6 +84,12 @@ export default function Wizard() {
         }
 
         return WizardStage.POSITION;
+    }
+
+    function startOver() {
+        resetWizard().then(router.refresh);
+        setWizardState(initialWizardState);
+        setWizardStage(WizardStage.WELCOME);
     }
 
     function nextStage() {
@@ -302,6 +313,7 @@ export default function Wizard() {
                         <div className="flex justify-between">
                             <button
                                 type="button"
+                                onClick={startOver}
                                 className="cursor-pointer bg-gray-500 hover:bg-gray-400 text-white py-2 px-4 rounded"
                             >
                                 Start Over
