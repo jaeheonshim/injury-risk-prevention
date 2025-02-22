@@ -10,7 +10,8 @@ enum WizardStage {
     AGE = 1,
     HEIGHT_WEIGHT = 2,
     POSITION = 3,
-    COMPLETED = 4,
+    COMBINE = 4,
+    COMPLETED = 5,
 }
 
 const positionMap: Record<string, string> = {
@@ -210,6 +211,43 @@ export default function Wizard() {
                                 />
                             </div>
                         )}
+
+                        {wizardStage === WizardStage.COMBINE && (
+                            <div className="mb-4">
+                                <h3>Player Physical Profile</h3>
+                                <p>
+                                    Your physical profile, including attributes like speed, strength, and agility, can be a strong predictor of injury risk. By analyzing these factors, we can identify potential vulnerabilities and help you stay healthier on the field.
+                                </p>
+
+                                <label htmlFor="forty" className="block mb-2">40-yard dash time:</label>
+                                <input
+                                    name="forty"
+                                    type="number"
+                                    placeholder="seconds"
+                                    min="0"
+                                    className={inputClass}
+                                />
+
+                                <label htmlFor="reps" className="block mb-2">Reps benched:</label>
+                                <input
+                                    name="reps"
+                                    type="number"
+                                    placeholder="reps"
+                                    min="0"
+                                    className={inputClass}
+                                />
+
+                                <label htmlFor="vertical" className="block mb-2">Vertical Jump:</label>
+                                <input
+                                    name="vertical"
+                                    type="number"
+                                    placeholder="inches"
+                                    min="0"
+                                    className={inputClass}
+                                />
+                            </div>
+                        )}
+
 
                         {wizardStage === WizardStage.POSITION && (
                             <div className="mb-4">
