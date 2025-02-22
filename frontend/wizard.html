@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizard Form</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="wizard-container">
+    <!-- Step 1 -->
+    <div class="wizard-step" id="step1">
+        <h2 class="cs-title">What is your age?</h2>
+        <input type="number" class="wizard-input" placeholder="Enter your age" />
+        <a href="#step2" class="next-btn">Next</a>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="wizard-step" id="step2">
+        <h2 class="cs-title">What is your gender?</h2>
+        <select class="wizard-input">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+        <a href="#step3" class="next-btn">Next</a>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="wizard-step" id="step3">
+        <h2 class="cs-title">What is your favorite color?</h2>
+        <input type="color" class="wizard-input" />
+        <a href="#step1" class="next-btn">Finish</a>
+    </div>
+</div>
+
+</body>
+</html>
