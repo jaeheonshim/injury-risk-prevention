@@ -183,6 +183,7 @@ export default function Wizard() {
 
                             {wizardStage === WizardStage.AGE && (
                                 <div className="mb-4">
+                                    <h3 className="text-xl font-semibold mb-2">Personal Information</h3>
                                     <label htmlFor="age" className="block mb-2">What is your age?</label>
                                     <input
                                         type="number"
@@ -198,6 +199,7 @@ export default function Wizard() {
 
                             {wizardStage === WizardStage.HEIGHT_WEIGHT && (
                                 <div className="mb-4">
+                                    <h3 className="text-xl font-semibold mb-2">Physical Attributes</h3>
                                     <label htmlFor="height" className="block mb-2">Height:</label>
                                     <div className="flex gap-2 mb-2">
                                         <input
@@ -243,25 +245,34 @@ export default function Wizard() {
                                 </div>
                             )}
 
+                            {wizardStage === WizardStage.POSITION && (
+                                <div className="mb-4">
+                                    <h3 className="text-xl font-semibold mb-2">Position</h3>
+                                    <label htmlFor="position" className="block mb-2">What is your position?</label>
+                                    <select
+                                        name="position"
+                                        defaultValue={wizardState.pos ?? ""}
+                                        onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
+                                        className={inputClass + " w-full"}
+                                        required
+                                    >
+                                        <option value="">Select your position</option>
+                                        {Object.keys(Position).map((key) => (
+                                            <option key={key} value={key}>
+                                                {positionMap[key]} ({key})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
                             {wizardStage === WizardStage.COMBINE && (
                                 <div className="mb-4">
-                                    <h3>Player Physical Profile</h3>
-                                    <p>
+                                    <h3 className="text-xl font-semibold mb-2">Player Physical Profile</h3>
+                                    <p className="mb-4">
                                         Your physical profile, including attributes like speed, strength, and agility, can be a strong predictor of injury risk. By analyzing these factors, we can identify potential vulnerabilities and help you stay healthier on the field.
                                     </p>
 
-                                <label htmlFor="forty" className="block mb-2">40-yard dash time:</label>
-                                <input
-                                    name="forty"
-                                    type="number"
-                                    placeholder="seconds"
-                                    min="0"
-                                    step="0.01"
-                                    value={wizardState.forty ?? ""}
-                                    onChange={(e) => setWizardStateProperty("forty", Number(e.target.value))}
-                                    className={inputClass}
-                                    required
-                                />
                                     <label htmlFor="forty" className="block mb-2">40-yard dash time:</label>
                                     <input
                                         name="forty"
@@ -297,39 +308,6 @@ export default function Wizard() {
                                         className={inputClass}
                                         required
                                     />
-                                </div>
-                            )}
-
-
-                        {wizardStage === WizardStage.COMPLETED && (
-                            <div className="mb-4">
-                                <h6>Is this correct?</h6>
-                                <p>Age: {wizardState.age}</p>
-                                <p>Position: {wizardState.pos && (positionMap[wizardState.pos])} ({wizardState.pos})</p>
-                                <p>Height: {wizardState.height && Math.floor(wizardState.height/12)} ft {wizardState.height && (wizardState.height%12)} in</p>
-                                <p>Weight: {wizardState.weight} pounds</p>
-                                <p>40-yard dash: {wizardState.forty} seconds</p>
-                                <p>225 bench: {wizardState.bench} rep(s)</p>
-                                <p>Vertical Jump: {wizardState.vertical} inches</p>
-                            </div>
-                        )}
-                            {wizardStage === WizardStage.POSITION && (
-                                <div className="mb-4">
-                                    <label htmlFor="position" className="block mb-2">What is your position?</label>
-                                    <select
-                                        name="position"
-                                        defaultValue={wizardState.pos ?? ""}
-                                        onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
-                                        className={inputClass + " w-full"}
-                                        required
-                                    >
-                                        <option value="">Select your position</option>
-                                        {Object.keys(Position).map((key) => (
-                                            <option key={key} value={key}>
-                                                {positionMap[key]} ({key})
-                                            </option>
-                                        ))}
-                                    </select>
                                 </div>
                             )}
                         </div>
