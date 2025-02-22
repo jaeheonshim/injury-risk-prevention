@@ -86,7 +86,7 @@ export default function Wizard() {
 
         saveWizardData(wizardState).then(() => {
             if (wizardStage) {
-                if (wizardStage + 1 >= WizardStage.COMPLETED) {
+                if (wizardStage + 1 > WizardStage.COMPLETED) {
                     // done with the wizard!
                 } else {
                     setWizardStage(wizardStage + 1);
@@ -242,6 +242,7 @@ export default function Wizard() {
                                     type="number"
                                     placeholder="seconds"
                                     min="0"
+                                    step="0.01"
                                     value={wizardState.forty ?? ""}
                                     onChange={(e) => setWizardStateProperty("forty", Number(e.target.value))}
                                     className={inputClass}
@@ -288,6 +289,19 @@ export default function Wizard() {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                        )}
+
+                        {wizardStage === WizardStage.COMPLETED && (
+                            <div className="mb-4">
+                                <h6>Is this correct?</h6>
+                                <p>Age: {wizardState.age}</p>
+                                <p>Position: {(positionMap[wizardState.pos])} ({wizardState.pos})</p>
+                                <p>Height: {Math.floor(wizardState.height/12)} ft {wizardState.height%12} in</p>
+                                <p>Weight: {wizardState.weight} pounds</p>
+                                <p>40-yard dash: {wizardState.forty} seconds</p>
+                                <p>225 bench: {wizardState.bench} rep(s)</p>
+                                <p>Vertical Jump: {wizardState.vertical} inches</p>
                             </div>
                         )}
                         </div>
