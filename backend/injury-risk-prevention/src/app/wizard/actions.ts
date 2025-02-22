@@ -42,8 +42,10 @@ export async function saveInjury(data: Injury) {
     });
 }
 
-export async function deleteInjury(injuryId: string) {
-
+export async function deleteInjury(id: string) {
+    await prisma.injury.delete({
+        where: {id: id}
+    });
 }
 
 export async function resetWizard() {

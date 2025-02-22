@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getWizardData, resetWizard, saveInjury, saveWizardData } from "./actions";
+import { getWizardData, resetWizard, saveInjury, deleteInjury, saveWizardData } from "./actions";
 import { Injury, InjuryType, Position, WizardData } from "@prisma/client";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -163,6 +163,12 @@ export default function Wizard() {
 
         setCurrentInjurySeason(null);
         setCurrentInjuryType(null);
+    }
+
+    function deleteSelectedInjury(id: string) {
+        setInjuries((prevInjuries) => prevInjuries.filter(injury => injury.id !== id));
+        deleteInjury(id)
+        
     }
 
     useEffect(() => {
@@ -365,7 +371,12 @@ export default function Wizard() {
                                         {injuries.map(pastInjury => (
                                             <div key={pastInjury.id}>
                                                 {pastInjury.season} - {pastInjury.type} injury
-                                            </div>
+                                            <button
+                                                type="button"
+                                                className="cursor-pointer bg-orange-500 hover:bg-orange-400 text-white py-2 px-4 rounded"
+                                                onClick={()=>deleteSelectedInjury(pastInjury.id)}
+                                           >-</button>
+                                           </div>
                                         ))}
                                     </div>
 
