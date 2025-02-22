@@ -11,8 +11,8 @@ const Home: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
-            <nav className="w-full bg-blue-900 text-white py-4 px-8 flex justify-between items-center shadow-md">
-                <h1 className="text-2xl font-bold">Injury Risk Prevention</h1>
+            <nav className="w-full bg-orange-500 text-white py-6 px-8 flex justify-between items-center shadow-md">
+                <h1 className="text-3xl font-bold">Injury Risk Prevention</h1>
                 <div>
                     {/* Add navigation links here if needed */}
                 </div>
