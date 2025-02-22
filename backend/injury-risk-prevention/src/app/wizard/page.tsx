@@ -12,7 +12,8 @@ enum WizardStage {
     HEIGHT_WEIGHT = 2,
     POSITION = 3,
     COMBINE = 4,
-    COMPLETED = 5,
+    REVIEW = 5,
+    COMPLETED = 6,
 }
 
 const positionMap: Record<string, string> = {
@@ -83,7 +84,15 @@ export default function Wizard() {
             return WizardStage.HEIGHT_WEIGHT;
         }
 
-        return WizardStage.POSITION;
+        if (!wizardData.pos) {
+            return WizardStage.POSITION;
+        }
+
+        if (!wizardData.forty || !wizardData.bench || !wizardData.vertical) {
+            return WizardStage.COMBINE;
+        }
+
+        return WizardStage.REVIEW;
     }
 
     function startOver() {
@@ -97,7 +106,7 @@ export default function Wizard() {
 
         saveWizardData(wizardState).then(() => {
             if (wizardStage) {
-                if (wizardStage + 1 > WizardStage.COMPLETED) {
+                if (wizardStage + 1 >= WizardStage.COMPLETED) {
                     // done with the wizard!
                 } else {
                     setWizardStage(wizardStage + 1);
@@ -311,16 +320,31 @@ export default function Wizard() {
                                 </div>
                             )}
 
-                            {wizardStage === WizardStage.COMPLETED && (
+                            {wizardStage === WizardStage.REVIEW && (
                                 <div className="mb-4">
-                                    <h6>Is this correct?</h6>
-                                    <p>Age: {wizardState.age}</p>
-                                    <p>Position: {wizardState.pos && (positionMap[wizardState.pos])} ({wizardState.pos})</p>
-                                    <p>Height: {wizardState.height && Math.floor(wizardState.height/12)} ft {wizardState.height && (wizardState.height%12)} in</p>
-                                    <p>Weight: {wizardState.weight} pounds</p>
-                                    <p>40-yard dash: {wizardState.forty} seconds</p>
-                                    <p>225 bench: {wizardState.bench} rep(s)</p>
-                                    <p>Vertical Jump: {wizardState.vertical} inches</p>
+                                    <h3 className="text-xl font-semibold mb-2">Review Your Information</h3>
+                                    <p className="mb-4">Please review your information before submitting:</p>
+                                    <div className="mb-2">
+                                        <strong>Age:</strong> {wizardState.age}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Height:</strong> {wizardState.height ? `${Math.floor(wizardState.height / 12)} ft ${wizardState.height % 12} in` : "N/A"}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Weight:</strong> {wizardState.weight} lbs
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Position:</strong> {positionMap[wizardState.pos ?? ""]}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>40-yard dash time:</strong> {wizardState.forty} seconds
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Reps benched:</strong> {wizardState.bench} reps
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Vertical Jump:</strong> {wizardState.vertical} inches
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -334,20 +358,20 @@ export default function Wizard() {
                                 Start Over
                             </button>
                             <div className="flex gap-2">
-                                {(wizardStage ?? 0) > WizardStage.AGE && <button
+                                <button
                                     type="button"
                                     onClick={prevStage}
+                                    disabled={(wizardStage ?? 0) <= WizardStage.AGE}
                                     className="cursor-pointer bg-gray-500 hover:bg-gray-400 text-white py-2 px-4 rounded disabled:opacity-50"
                                 >
                                     Back
-                                </button>}
-
-                                {wizardStage != WizardStage.COMPLETED && <button
+                                </button>
+                                <button
                                     type="submit"
                                     className="cursor-pointer bg-orange-500 hover:bg-orange-400 text-white py-2 px-4 rounded"
                                 >
-                                    Next
-                                </button>}
+                                    {wizardStage === WizardStage.REVIEW ? "Submit" : "Next"}
+                                </button>
                             </div>
                         </div>
                     </form>
