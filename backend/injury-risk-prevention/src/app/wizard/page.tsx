@@ -82,10 +82,27 @@ export default function Wizard() {
                     <button type="submit">Let's get started!</button>
                 </div>
             }
+
             { wizardStage === WizardStage.AGE && 
                 <div>
                     First, what is your age?
                     <input type="number" />
+                    <button type="submit">Next</button>
+                </div>
+            }
+
+            { wizardStage === WizardStage.HEIGHT_WEIGHT && 
+                <div>
+                    what is your height and weight?
+                    {/* Add appropriate fields here */}
+                    <button type="submit">Next</button>
+                </div>
+            }
+
+            { wizardStage === WizardStage.HEIGHT_WEIGHT && 
+                <div>
+                    what is your position?
+                    {/* We need a dropdown here with the football positions */}
                     <button type="submit">Next</button>
                 </div>
             }
