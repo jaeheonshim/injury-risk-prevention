@@ -356,54 +356,89 @@ export default function Wizard() {
 
                             {!loading && wizardStage === WizardStage.PAST_INJURIES && (
                                 <div className="mb-4">
-                                    <h3 className="text-xl font-semibold mb-2">Past Injuries</h3>
-                                    <p className="mb-4">
+                                    <h3 className="text-2xl font-semibold mb-3">Past Injuries</h3>
+                                    <p className="mb-4 text-gray-700">
                                         Your history of past injuries provides crucial insights into your overall durability and risk of future injuries. By analyzing patterns in previous injuries, we can identify potential weak points, track recovery trends, and develop strategies to minimize re-injury. Understanding your injury history helps us make smarter decisions to keep you performing at your best.
                                     </p>
+                                    <p className="mb-4 text-gray-700">
+                                        Please record all past sports-related injuries below, to the best of your ability.
+                                    </p>
 
-                                    <div>
-                                        {injuries.map(pastInjury => (
-                                            <div key={pastInjury.id}>
-                                                {pastInjury.season} - {pastInjury.type} injury
-                                            </div>
-                                        ))}
+                                    {/* Past Injuries List */}
+                                    <div className="mb-6">
+                                        <h4 className="text-lg font-medium mb-2">Recorded Injuries</h4>
+                                        <div className="border rounded-md p-4 bg-gray-50">
+                                            {injuries.length > 0 ? (
+                                                <ul className="space-y-2">
+                                                    {injuries.map((pastInjury, index) => (
+                                                        <li 
+                                                            key={pastInjury.id} 
+                                                            className="flex items-center justify-between py-2 border-b last:border-b-0"
+                                                        >
+                                                            <span className="text-gray-800">
+                                                                {pastInjury.season} - {pastInjury.type} Injury
+                                                            </span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                <p className="text-gray-500 italic">No past injuries recorded.</p>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-row">
-                                        <label htmlFor="season" className="block mb-2">Season:</label>
-                                        <input
-                                            name="season"
-                                            type="number"
-                                            placeholder="Year"
-                                            value={currentInjurySeason ?? ""}
-                                            onChange={(e) => setCurrentInjurySeason(parseInt(e.target.value))}
-                                            className={inputClass}
-                                            required
-                                        />
+                                    {/* Injury Form */}
+                                    <div className="border-t pt-4">
+                                        <h4 className="text-lg font-medium mb-3">Add a New Injury</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            {/* Season Input */}
+                                            <div>
+                                                <label htmlFor="season" className="block font-medium text-gray-700 mb-1">
+                                                    Season
+                                                </label>
+                                                <input
+                                                    name="season"
+                                                    type="number"
+                                                    placeholder="Year"
+                                                    value={currentInjurySeason ?? ""}
+                                                    onChange={(e) => setCurrentInjurySeason(parseInt(e.target.value))}
+                                                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                                    required
+                                                />
+                                            </div>
 
-                                        <label htmlFor="injury-type" className="block mb-2">Injury Type:</label>
-                                        <select
-                                            name="injury-type"
-                                            className={inputClass}
-                                            defaultValue={currentInjuryType as InjuryType}
-                                            onChange={(e) => setCurrentInjuryType(e.target.value as InjuryType)}
-                                            required
-                                        >
-                                            <option value="">
-                                                Select type
-                                            </option>
-                                            {Object.keys(InjuryType).map((key) => (
-                                                <option key={key} value={key}>
-                                                    {key}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            {/* Injury Type Select */}
+                                            <div>
+                                                <label htmlFor="injury-type" className="block font-medium text-gray-700 mb-1">
+                                                    Injury Type
+                                                </label>
+                                                <select
+                                                    name="injury-type"
+                                                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                                    defaultValue={currentInjuryType as InjuryType}
+                                                    onChange={(e) => setCurrentInjuryType(e.target.value as InjuryType)}
+                                                    required
+                                                >
+                                                    <option value="">Select type</option>
+                                                    {Object.keys(InjuryType).map((key) => (
+                                                        <option key={key} value={key}>
+                                                            {key}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
 
-                                        <button
-                                            type="button"
-                                            className="cursor-pointer bg-orange-500 hover:bg-orange-400 text-white py-2 px-4 rounded"
-                                            onClick={saveCurrentInjury}
-                                        >+</button>
+                                            {/* Add Button */}
+                                            <div className="flex items-end">
+                                                <button
+                                                    type="button"
+                                                    className="w-full md:w-auto bg-orange-500 hover:bg-orange-400 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                                    onClick={saveCurrentInjury}
+                                                >
+                                                    + Add Injury
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
