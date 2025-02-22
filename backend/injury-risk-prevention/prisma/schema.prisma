@@ -33,5 +33,8 @@ model WizardData {
   age Int?
   height Float? // in
   weight Float? // lbs
+  forty Float? // 40-yard dash time
+  bench Int? // Reps benched
+  vertical Float? // Vertical jump
   pos Position?
 }

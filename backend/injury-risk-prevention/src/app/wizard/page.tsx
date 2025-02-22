@@ -40,7 +40,10 @@ export default function Wizard() {
         age: null,
         height: null,
         weight: null,
-        pos: null
+        pos: null,
+        forty: null,
+        bench: null,
+        vertical: null
     });
     const [wizardStage, setWizardStage] = useState<WizardStage>();
     const [direction, setDirection] = useState(1);
@@ -239,15 +242,19 @@ export default function Wizard() {
                                     type="number"
                                     placeholder="seconds"
                                     min="0"
+                                    value={wizardState.forty ?? ""}
+                                    onChange={(e) => setWizardStateProperty("forty", Number(e.target.value))}
                                     className={inputClass}
                                 />
 
-                                <label htmlFor="reps" className="block mb-2">Reps benched:</label>
+                                <label htmlFor="bench" className="block mb-2">Reps benched:</label>
                                 <input
-                                    name="reps"
+                                    name="bench"
                                     type="number"
                                     placeholder="reps"
                                     min="0"
+                                    value={wizardState.bench ?? ""}
+                                    onChange={(e) => setWizardStateProperty("bench", Number(e.target.value))}
                                     className={inputClass}
                                 />
 
@@ -257,30 +264,32 @@ export default function Wizard() {
                                     type="number"
                                     placeholder="inches"
                                     min="0"
+                                    value={wizardState.vertical ?? ""}
+                                    onChange={(e) => setWizardStateProperty("vertical", Number(e.target.value))}
                                     className={inputClass}
                                 />
                             </div>
                         )}
 
 
-                            {wizardStage === WizardStage.POSITION && (
-                                <div className="mb-4">
-                                    <label htmlFor="position" className="block mb-2">What is your position?</label>
-                                    <select
-                                        name="position"
-                                        defaultValue={wizardState.pos ?? ""}
-                                        onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
-                                        className={inputClass + " w-full"}
-                                    >
-                                        <option value="">Select your position</option>
-                                        {Object.keys(Position).map((key) => (
-                                            <option key={key} value={key}>
-                                                {positionMap[key]} ({key})
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
+                        {wizardStage === WizardStage.POSITION && (
+                            <div className="mb-4">
+                                <label htmlFor="position" className="block mb-2">What is your position?</label>
+                                <select
+                                    name="position"
+                                    defaultValue={wizardState.pos ?? ""}
+                                    onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
+                                    className={inputClass + " w-full"}
+                                >
+                                    <option value="">Select your position</option>
+                                    {Object.keys(Position).map((key) => (
+                                        <option key={key} value={key}>
+                                            {positionMap[key]} ({key})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         </div>
 
                         <div className="flex justify-between">
