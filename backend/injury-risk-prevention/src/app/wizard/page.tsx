@@ -243,12 +243,12 @@ export default function Wizard() {
                                 </div>
                             )}
 
-                        {wizardStage === WizardStage.COMBINE && (
-                            <div className="mb-4">
-                                <h3>Player Physical Profile</h3>
-                                <p>
-                                    Your physical profile, including attributes like speed, strength, and agility, can be a strong predictor of injury risk. By analyzing these factors, we can identify potential vulnerabilities and help you stay healthier on the field.
-                                </p>
+                            {wizardStage === WizardStage.COMBINE && (
+                                <div className="mb-4">
+                                    <h3>Player Physical Profile</h3>
+                                    <p>
+                                        Your physical profile, including attributes like speed, strength, and agility, can be a strong predictor of injury risk. By analyzing these factors, we can identify potential vulnerabilities and help you stay healthier on the field.
+                                    </p>
 
                                 <label htmlFor="forty" className="block mb-2">40-yard dash time:</label>
                                 <input
@@ -262,66 +262,76 @@ export default function Wizard() {
                                     className={inputClass}
                                     required
                                 />
+                                    <label htmlFor="forty" className="block mb-2">40-yard dash time:</label>
+                                    <input
+                                        name="forty"
+                                        type="number"
+                                        placeholder="seconds"
+                                        min="0"
+                                        value={wizardState.forty ?? ""}
+                                        onChange={(e) => setWizardStateProperty("forty", Number(e.target.value))}
+                                        className={inputClass}
+                                        required
+                                    />
 
-                                <label htmlFor="bench" className="block mb-2">Reps benched:</label>
-                                <input
-                                    name="bench"
-                                    type="number"
-                                    placeholder="reps"
-                                    min="0"
-                                    value={wizardState.bench ?? ""}
-                                    onChange={(e) => setWizardStateProperty("bench", Number(e.target.value))}
-                                    className={inputClass}
-                                    required
-                                />
+                                    <label htmlFor="bench" className="block mb-2">Reps benched:</label>
+                                    <input
+                                        name="bench"
+                                        type="number"
+                                        placeholder="reps"
+                                        min="0"
+                                        value={wizardState.bench ?? ""}
+                                        onChange={(e) => setWizardStateProperty("bench", Number(e.target.value))}
+                                        className={inputClass}
+                                        required
+                                    />
 
-                                <label htmlFor="vertical" className="block mb-2">Vertical Jump:</label>
-                                <input
-                                    name="vertical"
-                                    type="number"
-                                    placeholder="inches"
-                                    min="0"
-                                    value={wizardState.vertical ?? ""}
-                                    onChange={(e) => setWizardStateProperty("vertical", Number(e.target.value))}
-                                    className={inputClass}
-                                    required
-                                />
-                            </div>
-                        )}
+                                    <label htmlFor="vertical" className="block mb-2">Vertical Jump:</label>
+                                    <input
+                                        name="vertical"
+                                        type="number"
+                                        placeholder="inches"
+                                        min="0"
+                                        value={wizardState.vertical ?? ""}
+                                        onChange={(e) => setWizardStateProperty("vertical", Number(e.target.value))}
+                                        className={inputClass}
+                                        required
+                                    />
+                                </div>
+                            )}
 
-
-                        {wizardStage === WizardStage.POSITION && (
-                            <div className="mb-4">
-                                <label htmlFor="position" className="block mb-2">What is your position?</label>
-                                <select
-                                    name="position"
-                                    defaultValue={wizardState.pos ?? ""}
-                                    onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
-                                    className={inputClass + " w-full"}
-                                    required
-                                >
-                                    <option value="">Select your position</option>
-                                    {Object.keys(Position).map((key) => (
-                                        <option key={key} value={key}>
-                                            {positionMap[key]} ({key})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        )}
 
                         {wizardStage === WizardStage.COMPLETED && (
                             <div className="mb-4">
                                 <h6>Is this correct?</h6>
                                 <p>Age: {wizardState.age}</p>
-                                <p>Position: {(positionMap[wizardState.pos])} ({wizardState.pos})</p>
-                                <p>Height: {Math.floor(wizardState.height/12)} ft {wizardState.height%12} in</p>
+                                <p>Position: {wizardState.pos && (positionMap[wizardState.pos])} ({wizardState.pos})</p>
+                                <p>Height: {wizardState.height && Math.floor(wizardState.height/12)} ft {wizardState.height && (wizardState.height%12)} in</p>
                                 <p>Weight: {wizardState.weight} pounds</p>
                                 <p>40-yard dash: {wizardState.forty} seconds</p>
                                 <p>225 bench: {wizardState.bench} rep(s)</p>
                                 <p>Vertical Jump: {wizardState.vertical} inches</p>
                             </div>
                         )}
+                            {wizardStage === WizardStage.POSITION && (
+                                <div className="mb-4">
+                                    <label htmlFor="position" className="block mb-2">What is your position?</label>
+                                    <select
+                                        name="position"
+                                        defaultValue={wizardState.pos ?? ""}
+                                        onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
+                                        className={inputClass + " w-full"}
+                                        required
+                                    >
+                                        <option value="">Select your position</option>
+                                        {Object.keys(Position).map((key) => (
+                                            <option key={key} value={key}>
+                                                {positionMap[key]} ({key})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex justify-between">
@@ -333,20 +343,20 @@ export default function Wizard() {
                                 Start Over
                             </button>
                             <div className="flex gap-2">
-                                <button
+                                {(wizardStage ?? 0) > WizardStage.AGE && <button
                                     type="button"
                                     onClick={prevStage}
-                                    disabled={(wizardStage ?? 0) <= WizardStage.AGE}
                                     className="cursor-pointer bg-gray-500 hover:bg-gray-400 text-white py-2 px-4 rounded disabled:opacity-50"
                                 >
                                     Back
-                                </button>
-                                <button
+                                </button>}
+
+                                {wizardStage != WizardStage.COMPLETED && <button
                                     type="submit"
                                     className="cursor-pointer bg-orange-500 hover:bg-orange-400 text-white py-2 px-4 rounded"
                                 >
                                     Next
-                                </button>
+                                </button>}
                             </div>
                         </div>
                     </form>
