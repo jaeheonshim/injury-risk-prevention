@@ -150,7 +150,7 @@ export default function Wizard() {
         }),
     };
 
-    const progressBarWidth = ((wizardStage ?? 0) / WizardStage.COMPLETED) * 100;
+    const progressBarWidth = ((wizardStage ?? 0) / (WizardStage.REVIEW)) * 100;
     const progressPercentage = Math.round(progressBarWidth);
 
     return (
@@ -328,7 +328,7 @@ export default function Wizard() {
                                         <strong>Age:</strong> {wizardState.age}
                                     </div>
                                     <div className="mb-2">
-                                        <strong>Height:</strong> {wizardState.height ? `${Math.floor(wizardState.height / 12)} ft ${wizardState.height % 12} in` : "N/A"}
+                                        <strong>Height:</strong> {wizardState.height !== null ? `${Math.floor(wizardState.height / 12)} ft ${wizardState.height % 12} in` : "N/A"}
                                     </div>
                                     <div className="mb-2">
                                         <strong>Weight:</strong> {wizardState.weight} lbs
