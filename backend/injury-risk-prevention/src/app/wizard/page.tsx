@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { getWizardData } from "./actions";
 import { WizardData } from "@prisma/client";
 import { randomUUID } from "crypto";
+import "./wizard.css";
 
 enum WizardStage {
     WELCOME = 0,
     AGE = 1,
     HEIGHT_WEIGHT = 2,
-    COMPLETED = 3,
-    LENGTH = 4
+    POSITION = 3,
+    COMPLETED = 4,
 }
 
 function WelcomeStage({ nextStage }: { nextStage: () => void }) {
@@ -74,7 +75,7 @@ export default function Wizard() {
         loadWizardData();
     }, []);
 
-    return <div>
+    return <div className="wizard-container">
         <h2>Welcome to the wizard!</h2>
         <form action={nextStage}>
             { wizardStage === WizardStage.WELCOME && 
@@ -99,7 +100,7 @@ export default function Wizard() {
                 </div>
             }
 
-            { wizardStage === WizardStage.HEIGHT_WEIGHT && 
+            { wizardStage === WizardStage.POSITION && 
                 <div>
                     what is your position?
                     {/* We need a dropdown here with the football positions */}
