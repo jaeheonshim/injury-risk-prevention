@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Position {
+  C // Center
+  LS // Long snapper
+  LB // Line backer
+  RB // Running back
+  G // Guard
+  WR // Wide receiver
+  CB // Corner back
+  DE // Defensive end
+  TE // Tight end
+  S // Safety
+  DT // Defensive tackle
+  K // Kicker
+  P // Punter
+  QB // Quarterback
+  T // Offensive Tackle
+}
+
+model WizardData {
+  id  String @id @default(uuid())
+  age Int?
+  height Float? // in
+  weight Float? // lbs
+  pos Position?
+}
