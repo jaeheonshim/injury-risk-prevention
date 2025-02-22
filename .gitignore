@@ -2,4 +2,4 @@
 !/*/
 !/.gitignore
 !*.ipynb
-nfl_injury_data.csv
+!*.csv
