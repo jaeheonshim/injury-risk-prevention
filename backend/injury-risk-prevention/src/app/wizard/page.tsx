@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getWizardData, saveWizardData } from "./actions";
 import { Position, WizardData } from "@prisma/client";
-import { randomUUID } from "crypto";
+import { motion } from "motion/react"
 
 enum WizardStage {
     WELCOME = 0,
@@ -31,6 +31,8 @@ const positionMap: Record<string, string> = {
     T: "Offensive Tackle"
 };
 
+const inputClass = "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400";
+
 export default function Wizard() {
     const [wizardState, setWizardState] = useState<WizardData>({
         id: crypto.randomUUID(),
@@ -40,12 +42,13 @@ export default function Wizard() {
         pos: null
     });
     const [wizardStage, setWizardStage] = useState<WizardStage>();
+    const [direction, setDirection] = useState(1);
     const [loading, setLoading] = useState<boolean>(true);
 
     async function loadWizardData() {
         const wizardData = await getWizardData();
 
-        if(wizardData) {
+        if (wizardData) {
             setWizardState(wizardData);
             setWizardStage(getWizardStage(wizardData));
         } else {
@@ -63,28 +66,27 @@ export default function Wizard() {
     }
 
     function getWizardStage(wizardData: WizardData) {
-        // return the appropriate wizard stage depending on which fields are null
-
-        if(!wizardData.age) {
+        if (!wizardData.age) {
             return WizardStage.AGE;
         }
 
-        if(!wizardData.height || !wizardData.weight) {
+        if (!wizardData.height || !wizardData.weight) {
             return WizardStage.HEIGHT_WEIGHT;
         }
 
-        return WizardStage.COMPLETED;
+        return WizardStage.POSITION;
     }
 
     function nextStage() {
         setLoading(true);
 
         saveWizardData(wizardState).then(() => {
-            if(wizardStage) {
-                if(wizardStage + 1 >= WizardStage.COMPLETED) {
+            if (wizardStage) {
+                if (wizardStage + 1 >= WizardStage.COMPLETED) {
                     // done with the wizard!
                 } else {
                     setWizardStage(wizardStage + 1);
+                    setDirection(1);
                 }
             } else {
                 setWizardStage(WizardStage.AGE);
@@ -97,102 +99,164 @@ export default function Wizard() {
     }
 
     function prevStage() {
-        if(wizardStage) {
-            if(wizardStage - 1 > WizardStage.WELCOME) setWizardStage(wizardStage - 1);
+        if (wizardStage) {
+            if (wizardStage - 1 > WizardStage.WELCOME) {
+                setWizardStage(wizardStage - 1);
+                setDirection(-1);
+            }
         }
     }
 
     useEffect(() => {
-        // Check if the user was already working on filling out a wizard
         loadWizardData();
     }, []);
 
-    return <div className="wizard-container">
-        <h2>Welcome to the wizard!</h2>
-        <form action={nextStage}>
-            {loading &&
-            <p>
-                Loading... (this indicator should be replaced with an overlay)
-            </p>
-            }
+    const variants = {
+        enter: (direction: number) => ({
+            x: direction > 0 ? 300 : -300,
+            opacity: 0,
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+        },
+        exit: (direction: number) => ({
+            x: direction > 0 ? -300 : 300,
+            opacity: 0,
+        }),
+    };
 
-            { wizardStage === WizardStage.WELCOME && 
-                <div>
+    return (
+        <motion.div
+            key={wizardStage}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.1 }}
+        >
+            <div className="w-full max-w-xl h-70 bg-white rounded-lg shadow p-8 flex flex-col">
+                <form action={nextStage} className="flex flex-col h-full">
+                    <div className="flex-grow">
+                        {loading && (
+                            <p>
+                                Loading... (this indicator should be replaced with an overlay)
+                            </p>
+                        )}
 
-                </div>
-            }
+                        {wizardStage === WizardStage.WELCOME && (
+                            <div>
+                                <h2 className="text-2xl font-bold mb-4">Welcome to the wizard!</h2>
+                                <p className="mb-4">Need some info here on what this is for, etc.</p>
+                            </div>
+                        )}
 
-            {wizardStage === WizardStage.AGE && (
-                <div>
-                    <label htmlFor="age">What is your age?</label>
-                    <input
-                        type="number"
-                        name="age"
-                        min="0"
-                        value={wizardState.age ?? ""}
-                        onChange={(e) => setWizardStateProperty("age", Number(e.target.value))}
-                        required
-                    />
-                </div>
-            )}
+                        {wizardStage === WizardStage.AGE && (
+                            <div className="mb-4">
+                                <label htmlFor="age" className="block mb-2">What is your age?</label>
+                                <input
+                                    type="number"
+                                    name="age"
+                                    min="0"
+                                    value={wizardState.age ?? ""}
+                                    onChange={(e) => setWizardStateProperty("age", Number(e.target.value))}
+                                    required
+                                    className={inputClass}
+                                />
+                            </div>
+                        )}
 
-            {wizardStage === WizardStage.HEIGHT_WEIGHT && (
-                <div>
-                    <label htmlFor="height">Height:</label>
-                    <input
-                        type="number"
-                        name="heightFeet"
-                        min="0"
-                        placeholder="ft"
-                        value={wizardState.height ? Math.floor(wizardState.height / 12) : ""}
-                        onChange={(e) => {
-                            const feet = Number(e.target.value) * 12;
-                            const inches = wizardState.height ? wizardState.height % 12 : 0;
-                            setWizardStateProperty("height", feet + inches);
-                        }}
-                    />
-                    <input
-                        type="number"
-                        name="heightInches"
-                        min="0"
-                        max="11"
-                        placeholder="in"
-                        value={wizardState.height ? wizardState.height % 12 : ""}
-                        onChange={(e) => {
-                            const inches = Number(e.target.value);
-                            const feet = wizardState.height ? Math.floor(wizardState.height / 12) * 12 : 0;
-                            setWizardStateProperty("height", feet + inches);
-                        }}
-                    />
-                    <label htmlFor="weight">Weight (lbs):</label>
-                    <input
-                        name="weight"
-                        type="number"
-                        min="0"
-                        value={wizardState.weight ?? ""}
-                        onChange={(e) => setWizardStateProperty("weight", Number(e.target.value))}
-                    />
-                </div>
-            )}
+                        {wizardStage === WizardStage.HEIGHT_WEIGHT && (
+                            <div className="mb-4">
+                                <label htmlFor="height" className="block mb-2">Height:</label>
+                                <div className="flex gap-2 mb-2">
+                                    <input
+                                        type="number"
+                                        name="heightFeet"
+                                        min="0"
+                                        placeholder="ft"
+                                        value={wizardState.height ? Math.floor(wizardState.height / 12) : ""}
+                                        onChange={(e) => {
+                                            const feet = Number(e.target.value) * 12;
+                                            const inches = wizardState.height ? wizardState.height % 12 : 0;
+                                            setWizardStateProperty("height", feet + inches);
+                                        }}
+                                        className={inputClass + " w-full"}
+                                    />
+                                    <input
+                                        type="number"
+                                        name="heightInches"
+                                        min="0"
+                                        max="11"
+                                        placeholder="in"
+                                        value={wizardState.height ? wizardState.height % 12 : ""}
+                                        onChange={(e) => {
+                                            const inches = Number(e.target.value);
+                                            const feet = wizardState.height ? Math.floor(wizardState.height / 12) * 12 : 0;
+                                            setWizardStateProperty("height", feet + inches);
+                                        }}
+                                        className={inputClass + " w-full"}
+                                    />
+                                </div>
+                                <label htmlFor="weight" className="block mb-2">Weight (lbs):</label>
+                                <input
+                                    name="weight"
+                                    type="number"
+                                    min="0"
+                                    value={wizardState.weight ?? ""}
+                                    onChange={(e) => setWizardStateProperty("weight", Number(e.target.value))}
+                                    className={inputClass}
+                                />
+                            </div>
+                        )}
 
-            { wizardStage === WizardStage.POSITION && 
-                <div>
-                    <label htmlFor="position">What is your position?</label>
-                    <select name="position"
-                        defaultValue={wizardState.pos ?? ""}
-                        onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
-                    >
-                        <option value="">Select your position</option>
-                        {Object.keys(Position).map((key) => (
-                            <option key={key} value={key}>{positionMap[key]} ({key})</option>
-                        ))}
-                    </select>
-                </div>
-            }
-            
-            <button type="button">Start Over</button>
-            <button type="button" onClick={prevStage} disabled={(wizardStage ?? 0) <= WizardStage.AGE}>Back</button> 
-            <button type="submit">Next</button>
-        </form>
-    </div>
+                        {wizardStage === WizardStage.POSITION && (
+                            <div className="mb-4">
+                                <label htmlFor="position" className="block mb-2">What is your position?</label>
+                                <select
+                                    name="position"
+                                    defaultValue={wizardState.pos ?? ""}
+                                    onChange={(e) => setWizardStateProperty("pos", e.target.value as keyof typeof Position)}
+                                    className={inputClass + " w-full"}
+                                >
+                                    <option value="">Select your position</option>
+                                    {Object.keys(Position).map((key) => (
+                                        <option key={key} value={key}>
+                                            {positionMap[key]} ({key})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex justify-between">
+                        <button
+                            type="button"
+                            className="cursor-pointer bg-gray-500 hover:bg-gray-400 text-white py-2 px-4 rounded"
+                        >
+                            Start Over
+                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={prevStage}
+                                disabled={(wizardStage ?? 0) <= WizardStage.AGE}
+                                className="cursor-pointer bg-gray-500 hover:bg-gray-400 text-white py-2 px-4 rounded disabled:opacity-50"
+                            >
+                                Back
+                            </button>
+                            <button
+                                type="submit"
+                                className="cursor-pointer bg-orange-500 hover:bg-orange-400 text-white py-2 px-4 rounded"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </motion.div>
+    );
 }
