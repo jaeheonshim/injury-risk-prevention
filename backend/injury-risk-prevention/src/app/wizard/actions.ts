@@ -37,7 +37,7 @@ export async function saveWizardData(data: WizardData) {
 }
 
 export async function saveInjury(data: Injury) {
-    await prisma.wizardData.create({
+    await prisma.injury.create({
         data: data
     });
 }

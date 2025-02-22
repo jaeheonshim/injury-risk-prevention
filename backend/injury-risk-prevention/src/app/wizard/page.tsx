@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getWizardData, resetWizard, saveWizardData } from "./actions";
+import { getWizardData, resetWizard, saveInjury, saveWizardData } from "./actions";
 import { Injury, InjuryType, Position, WizardData } from "@prisma/client";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -45,8 +45,7 @@ const initialWizardState = {
     pos: null,
     forty: null,
     bench: null,
-    vertical: null,
-    injuries: []
+    vertical: null
 };
 
 export default function Wizard() {
@@ -139,14 +138,30 @@ export default function Wizard() {
     }
 
     function saveCurrentInjury() {
+        if(!currentInjurySeason) {
+            alert("Please enter the injury season!");
+            return;
+        }
+
+        if(!currentInjuryType) {
+            alert("Please select the injury type!");
+            return;
+        }
+
+        const injury = {
+            id: crypto.randomUUID(),
+            season: currentInjurySeason!,
+            type: currentInjuryType!,
+            playerId: wizardState.id
+        };
+        
+        saveInjury(injury)
         setInjuries(prev => (
-            [...prev, {
-                id: crypto.randomUUID(),
-                season: currentInjurySeason!,
-                type: currentInjuryType!,
-                playerId: wizardState.id
-            }]
+            [...prev, injury]
         ));
+
+        setCurrentInjurySeason(null);
+        setCurrentInjuryType(null);
     }
 
     useEffect(() => {
@@ -369,6 +384,7 @@ export default function Wizard() {
                                         <select
                                             name="injury-type"
                                             className={inputClass}
+                                            defaultValue={currentInjuryType as InjuryType}
                                             onChange={(e) => setCurrentInjuryType(e.target.value as InjuryType)}
                                             required
                                         >
