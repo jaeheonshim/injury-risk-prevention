@@ -29,23 +29,34 @@ enum Position {
 }
 
 model WizardData {
-  id  String @id @default(uuid())
-  age Int?
-  height Float? // in
-  weight Float? // lbs
-  forty Float? // 40-yard dash time
-  bench Int? // Reps benched
-  vertical Float? // Vertical jump
-  pos Position?
-  injuries Injury[] @relation("PlayerInjuries")
+  id              String           @id @default(uuid())
+  age             Int?
+  height          Float?           // in
+  weight          Float?           // lbs
+  forty           Float?           // 40-yard dash time
+  bench           Int?             // Reps benched
+  vertical        Float?           // Vertical jump
+  pos             Position?
+  injuries        Injury[]         @relation("PlayerInjuries")
+  inferenceResult InferenceResult? // One-to-one relation
 }
 
 model Injury {
-  id          String      @id @default(uuid())
-  type        InjuryType
-  season      Int
-  player      WizardData @relation("PlayerInjuries", fields: [playerId], references: [id])
-  playerId    String
+  id       String      @id @default(uuid())
+  type     InjuryType
+  season   Int
+  player   WizardData  @relation("PlayerInjuries", fields: [playerId], references: [id])
+  playerId String
+}
+
+// Here we set up the inference result model.
+// The predictions field is of type Json (available with Prisma for several providers, including SQLite).
+// The wizardDataId field is marked as @unique to enforce a one-to-one relationship.
+model InferenceResult {
+  id            String     @id @default(uuid())
+  predictions   Json       // A mapping: InjuryType -> Float
+  wizardData    WizardData @relation(fields: [wizardDataId], references: [id])
+  wizardDataId  String     @unique
 }
 
 enum InjuryType {

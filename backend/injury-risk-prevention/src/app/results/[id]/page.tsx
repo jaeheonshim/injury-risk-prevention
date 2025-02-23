@@ -1,7 +1,7 @@
 'use server';
 
 import { notFound } from "next/navigation";
-import { getWizardData } from "./actions";
+import { getInferenceResult, getWizardData } from "./actions";
 import ChatbotWidget from "./ChatbotWidget";
 import { positionMap } from "@/util/helpers";
 
@@ -9,6 +9,8 @@ export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
 
     const wizardData = await getWizardData(id);
+    const inferenceResult = await getInferenceResult(id);
+
     const positionMap: Record<string, string> = {
         C: "Center",
         LS: "Long Snapper",
@@ -29,6 +31,19 @@ export default async function ResultsPage({ params }: { params: any }) {
 
     if(!wizardData) {
         notFound();
+    }
+
+    if(!inferenceResult) {
+        return <div className="min-h-screen bg-gray-100 flex flex-col">
+            {/* Navigation Bar */}
+            <nav className="w-full bg-orange-500 text-white py-6 px-8 flex justify-between items-center shadow-md">
+                <h1 className="text-3xl font-bold">Injury Risk Prevention</h1>
+            </nav>
+
+            <div className="flex-grow flex flex-col items-center justify-center p-8">
+                Your results aren't quite ready yet. Please check back soon!
+            </div>
+        </div>
     }
 
     return (

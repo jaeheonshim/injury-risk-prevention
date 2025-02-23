@@ -15,3 +15,13 @@ export async function getWizardData(id: string) {
 
     return wizardData;
 }
+
+export async function getInferenceResult(wizardDataId: string) {
+    const inferenceResult = await prisma.inferenceResult.findUnique({
+        where: {
+            wizardDataId: wizardDataId
+        }
+    });
+
+    return inferenceResult;
+}
