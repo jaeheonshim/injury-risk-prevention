@@ -6,6 +6,7 @@ import ChatbotWidget from "./ChatbotWidget";
 import { positionMap } from "@/util/helpers";
 import InferenceWidget from "./InferenceWidget";
 import InjuryBarChart from "./InjuryBarChart";
+import { capitalizeString } from "@/util/util";
 
 export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
@@ -48,6 +49,10 @@ export default async function ResultsPage({ params }: { params: any }) {
         </div>
     }
 
+    const predictions = inferenceResult.predictions as Object;
+    const sortedEntries = Object.entries(predictions).sort(([, a], [, b]) => b - a);
+    const mostLikelyInjury = sortedEntries[0][0];
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             {/* Navigation Bar */}
@@ -63,7 +68,7 @@ export default async function ResultsPage({ params }: { params: any }) {
                     {/* Most Likely Injury Box */}
                     <div className="mb-8 p-4 bg-gray-50 border rounded-md">
                         <h2 className="text-2xl font-bold text-gray-900 mb-4">Most Likely Body Part to Get Injured</h2>
-                        <p className="text-gray-700">{JSON.stringify(inferenceResult)}</p>
+                        <p className="text-gray-700 text-4xl">{capitalizeString(mostLikelyInjury)}</p>
                     </div>
 
                     <div className="flex">
