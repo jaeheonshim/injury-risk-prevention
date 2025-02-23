@@ -23,100 +23,97 @@ df = pd.read_csv('data.csv')
 
 app = Flask(__name__)
 
-# def run_inference(wizard_data):
-#     """
-#     Placeholder for ML inference logic. Replace with actual model prediction.
-    
-#     Args:
-#         wizard_data (dict): Dictionary containing wizard data (age, height, etc.)
-
-#     Returns:
-#         dict: Predicted probabilities for each injury type.
-#     """
-#     X_injury_counts = np.zeros(shape=(1, len(injury_types)))
-#     X_position = np.zeros(shape=(1, 1))
-#     X_numerical = np.zeros(shape=(1, len(numerical_types)))
-
-#     # Example: Mock predictions based on height & weight (replace with actual model)
-#     height = wizard_data.get("height", 70)  # Default 70 inches if missing
-#     weight = wizard_data.get("weight", 200) # Default 200 lbs if missing
-
-#     past_injuries = wizard_data.get('injuries', [])
-#     position = wizard_data.get('pos', 0)
-
-#     model = joblib.load('model.joblib')
-
-#     for injury in past_injuries:
-#         X_injury_counts[0][injury_types.index(injury['type'].upper())] += 1
-
-#     X_position[0][0] = pos_types.index(position)
-
-#     for i, value in enumerate(numerical_types):
-#         X_numerical[0][i] = wizard_data.get(value, 0)
-
-#     X_numerical = scaler.transform(X_numerical) # Normalize numerical data
-
-#     prediction = loaded_model.predict([X_injury_counts, X_position, X_numerical])[0]
-
-#     output = {}
-#     for i, injury in enumerate(injury_types):
-#         output[injury] = float(prediction[i])
-    
-#     return output
-
 def run_inference(wizard_data):
     """
-    Performs inference using a persisted joblib model.
-
+    Placeholder for ML inference logic. Replace with actual model prediction.
+    
     Args:
-        wizard_data (dict): Dictionary containing wizard data (e.g., injuries, pos, numerical inputs)
+        wizard_data (dict): Dictionary containing wizard data (age, height, etc.)
 
     Returns:
         dict: Predicted probabilities for each injury type.
     """
-    # Initialize feature arrays
-    X_injury_counts = np.zeros((1, len(injury_types)))
-    X_position = np.zeros((1, 1))
-    X_numerical = np.zeros((1, len(numerical_types)))
-    
-    # Process past injuries into a one-hot count vector
+    X_injury_counts = np.zeros(shape=(1, len(injury_types)))
+    X_position = np.zeros(shape=(1, 1))
+    X_numerical = np.zeros(shape=(1, len(numerical_types)))
+
+    # Example: Mock predictions based on height & weight (replace with actual model)
+    height = wizard_data.get("height", 70)  # Default 70 inches if missing
+    weight = wizard_data.get("weight", 200) # Default 200 lbs if missing
+
     past_injuries = wizard_data.get('injuries', [])
+    position = wizard_data.get('pos', 0)
+
+    model = joblib.load('model.joblib')
+
     for injury in past_injuries:
-        injury_name = injury['type'].upper()
-        if injury_name in injury_types:
-            X_injury_counts[0][injury_types.index(injury_name)] += 1
+        X_injury_counts[0][injury_types.index(injury['type'].upper())] += 1
 
-    # Process position: default to first element if missing
-    position = wizard_data.get('pos', pos_types[0])
-    if position in pos_types:
-        X_position[0][0] = pos_types.index(position)
-    else:
-        X_position[0][0] = 0
+    X_position[0][0] = pos_types.index(position)
 
-    # Process numerical features
-    for i, feature in enumerate(numerical_types):
-        X_numerical[0][i] = wizard_data.get(feature, 0)
-    
-    # Normalize numerical data using the pre-loaded scaler
-    X_numerical = scaler.transform(X_numerical)
-    
-    # Concatenate all features into a single input array
-    # Ensure the order of features matches the order used during training
-    input_features = np.concatenate([X_numerical, X_injury_counts, X_position], axis=1)
-    
-    # Load the persisted model from joblib (this assumes the file exists at the given path)
-    joblib_model = joblib.load('model.joblib')
-    
-    # Use the model to predict the output based on the input features
-    predicted_output = joblib_model.predict(input_features)
-    
-    # Format the prediction output as a dictionary mapping each injury type to its prediction
+    for i, value in enumerate(numerical_types):
+        X_numerical[0][i] = wizard_data.get(value, 0)
+
+    X_numerical = scaler.transform(X_numerical) # Normalize numerical data
+
+    prediction = loaded_model.predict([X_injury_counts, X_position, X_numerical])[0]
+
     output = {}
     for i, injury in enumerate(injury_types):
-        # Here we assume that the model outputs a vector of predictions for each injury type
-        output[injury] = float(predicted_output[0][i])
+        output[injury] = float(prediction[i])
     
     return output
+
+# def run_inference(wizard_data):
+#     """
+#     Performs inference using a persisted joblib model.
+
+#     Args:
+#         wizard_data (dict): Dictionary containing wizard data (e.g., injuries, pos, numerical inputs)
+
+#     Returns:
+#         dict: Predicted probabilities for each injury type.
+#     """
+#     # Initialize feature arrays
+#     X_injury_counts = np.zeros((1, len(injury_types)))
+#     X_position = np.zeros((1, 1))
+#     X_numerical = np.zeros((1, len(numerical_types)))
+    
+#     # Process past injuries into a one-hot count vector
+#     past_injuries = wizard_data.get('injuries', [])
+#     for injury in past_injuries:
+#         injury_name = injury['type'].lower()
+#         if injury_name in injury_types:
+#             X_injury_counts[0][injury_types.index(injury_name)] += 1
+
+#     # Process position: default to first element if missing
+#     position = wizard_data.get('pos', pos_types[0])
+#     if position in pos_types:
+#         X_position[0][0] = pos_types.index(position)
+#     else:
+#         X_position[0][0] = 0
+
+#     # Process numerical features
+#     for i, feature in enumerate(numerical_types):
+#         X_numerical[0][i] = wizard_data.get(feature, 0)
+    
+#     # Concatenate all features into a single input array
+#     # Ensure the order of features matches the order used during training
+#     input_features = np.concatenate([X_numerical, X_injury_counts, X_position], axis=1)
+    
+#     # Load the persisted model from joblib (this assumes the file exists at the given path)
+#     joblib_model = joblib.load('model.joblib')
+    
+#     # Use the model to predict the output based on the input features
+#     predicted_output = joblib_model.predict(input_features)
+    
+#     # Format the prediction output as a dictionary mapping each injury type to its prediction
+#     output = {}
+#     for i, injury in enumerate(injury_types):
+#         # Here we assume that the model outputs a vector of predictions for each injury type
+#         output[injury] = float(predicted_output[0][i])
+    
+#     return output
 
 
 @app.route('/inference', methods=['POST'])

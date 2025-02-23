@@ -66,7 +66,8 @@ function ChatbotWidget({ wizardData, inferenceResult }: { wizardData: WizardData
             3. Preventative Measures: Practical advice on training modifications, techniques, and strategies to reduce the risk of ${mostLikelyInjury}.
             4. Management and Next Steps: Guidance on early treatment options and when to seek professional medical help.
 
-            Your responses should be easy to understand, supportive, and actionable for ${wizardData.name}. YOUR RESPONSES MUST BE SHORT, SIMPLE, AND EASY TO UNDERSTAND. PLEASE BE POSITIVE!`
+            Your responses should be easy to understand, supportive, and actionable for ${wizardData.name}. YOUR RESPONSES MUST BE SHORT, SIMPLE, AND EASY TO UNDERSTAND. PLEASE BE POSITIVE!
+            MAKE SURE TO CITE TRUSTWORTHY SOURCES (such as .gov websites) FOR ANY MEDICAL INFORMATION YOU PROVIDE.`
         });
         setModel(model);
 
