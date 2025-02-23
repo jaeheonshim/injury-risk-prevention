@@ -105,7 +105,7 @@ def run_inference(wizard_data):
     input_features = np.concatenate([X_injury_counts, X_position, X_numerical], axis=1)
     
     # Load the persisted model from joblib (this assumes the file exists at the given path)
-    joblib_model = joblib.load('ExtraTreesRegressor4.joblib')
+    joblib_model = joblib.load('model.joblib')
     
     # Use the model to predict the output based on the input features
     predicted_output = joblib_model.predict(input_features)
