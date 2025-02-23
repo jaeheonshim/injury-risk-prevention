@@ -1,13 +1,16 @@
 'use server';
 
 import { notFound } from "next/navigation";
-import { getInferenceResult, getWizardData, runInference } from "./actions";
+import { getInferenceResult, getInjuryStatistics, getWizardData, runInference } from "./actions";
 import ChatbotWidget from "./ChatbotWidget";
 import { positionMap } from "@/util/helpers";
 import InferenceWidget from "./InferenceWidget";
 import InjuryBarChart from "./InjuryBarChart";
 import { capitalizeString } from "@/util/util";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import InjuryHeatmap from "./InjuryHeatmap";
+import InjuryScatterPlot from "./InjuryScatterPlot";
+import InjuriesBoxplot from "./InjuriesBoxPlot";
 
 export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
@@ -33,11 +36,11 @@ export default async function ResultsPage({ params }: { params: any }) {
         T: "Offensive Tackle"
     };
 
-    if(!wizardData) {
+    if (!wizardData) {
         notFound();
     }
 
-    if(!inferenceResult) {
+    if (!inferenceResult) {
         return <div className="min-h-screen bg-gray-100 flex flex-col">
             {/* Navigation Bar */}
             <nav className="w-full bg-orange-500 text-white py-6 px-8 flex justify-between items-center shadow-md">
@@ -55,7 +58,7 @@ export default async function ResultsPage({ params }: { params: any }) {
     const mostLikelyInjury = sortedEntries[0][0];
 
     const genAI = new GoogleGenerativeAI("REDACTED");
-    const model = genAI.getGenerativeModel({model: "gemini-1.5-flash"})
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
 
     const reason = await model.generateContent(
         `You are a sports injury predictor. Here are the stats of the player you are analyzing
@@ -69,7 +72,7 @@ export default async function ResultsPage({ params }: { params: any }) {
         - Past injuries: ${JSON.stringify((wizardData as any).injuries)}
 
         The predicted most likely injury is ${mostLikelyInjury}. Please generate a short reason for analysis.`)
-    
+
     const preventative = await model.generateContent(
         `You are a sports injury predictor. Here are the stats of the player you are analyzing
 
@@ -83,11 +86,13 @@ export default async function ResultsPage({ params }: { params: any }) {
 
         The predicted most likely injury is ${mostLikelyInjury}. Please generate a short description of preventative measures. Do not list, just a short paragraph.`)
 
+    const injuryStatistics = await getInjuryStatistics(wizardData.injuries.map(injury => injury.type));
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             {/* Navigation Bar */}
             <nav className="w-full bg-orange-500 text-white py-6 px-8 flex justify-between items-center shadow-md">
-                <h1 className="text-3xl font-bold">Injury Risk Prevention</h1>
+                <h1 className="text-3xl font-bold">InjuryShield</h1>
             </nav>
 
             {/* Main Content */}
@@ -103,22 +108,62 @@ export default async function ResultsPage({ params }: { params: any }) {
 
                     <div className="flex">
                         {/* Left Column */}
-                        <div className="w-2/3 pr-4">
+                        <div className="w-300 pr-4">
                             <div className="mb-8 p-4 bg-gray-50 border rounded-md">
                                 <h3 className="text-xl font-semibold mb-2">Most Likely Injuries</h3>
                                 <InjuryBarChart inferenceResult={inferenceResult} />
                             </div>
- 
-                            {/* Analysis Reason Box */}
-                            <div className="mb-8 p-4 bg-gray-50 border rounded-md">
-                                <h3 className="text-xl font-semibold mb-2">Your Stats</h3>
-                                <p className="text-gray-700 mb-4">Age: {wizardData.age}</p>
-                                <p className="text-gray-700 mb-4">Height: {Math.floor((wizardData.height ?? 0) / 12)} ft {(wizardData.height ?? 0) % 12}</p>
-                                <p className="text-gray-700 mb-4">Weight: {wizardData.weight} lbs</p>
-                                <p className="text-gray-700 mb-4">Position: {positionMap[wizardData.pos ?? ""]} ({wizardData.pos}) </p>
-                                <p className="text-gray-700 mb-4">40-yard dash time: {wizardData.forty} seconds</p>
-                                <p className="text-gray-700 mb-4">Reps benched: {wizardData.bench} rep(s)</p>
-                                <p className="text-gray-700 mb-4">Vertical Jump: {wizardData.vertical} inches</p>
+
+                            <div className="mb-8 p-6 bg-gray-50 border rounded-md shadow-sm">
+                                <h3 className="text-2xl font-semibold mb-4 text-gray-800">Your Stats</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                                        <p className="text-gray-700"><span className="font-bold">Age:</span> {wizardData.age}</p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                                        <p className="text-gray-700">
+                                            <span className="font-bold">Height:</span> {Math.floor((wizardData.height ?? 0) / 12)} ft {(wizardData.height ?? 0) % 12} in
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                                        <p className="text-gray-700"><span className="font-bold">Weight:</span> {wizardData.weight} lbs</p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                                        <p className="text-gray-700">
+                                            <span className="font-bold">Position:</span> {positionMap[wizardData.pos ?? ""]} ({wizardData.pos})
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                                        <p className="text-gray-700">
+                                            <span className="font-bold">40-yard Dash:</span> {wizardData.forty} s
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                                        <p className="text-gray-700">
+                                            <span className="font-bold">Bench Press:</span> {wizardData.bench} rep(s)
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                                        <p className="text-gray-700">
+                                            <span className="font-bold">Vertical Jump:</span> {wizardData.vertical} in
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="mt-6">
+                                    <p className="text-gray-700 font-bold mb-2">Past Injuries:</p>
+                                    <ul className="space-y-2">
+                                        {wizardData.injuries.map((pastInjury) => (
+                                            <li
+                                                key={pastInjury.id}
+                                                className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
+                                            >
+                                                <span className="text-gray-800">
+                                                    {pastInjury.season} - {pastInjury.type} Injury
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
 
                             <div className="mb-8 p-4 bg-gray-50 border rounded-md">
@@ -134,7 +179,11 @@ export default async function ResultsPage({ params }: { params: any }) {
                         </div>
 
                         {/* Right Column - Chatbot */}
-                        <ChatbotWidget wizardData={wizardData} inferenceResult={inferenceResult} />
+                        <div>
+                            <InjuryHeatmap inferenceResult={inferenceResult} />
+                            <ChatbotWidget wizardData={wizardData} inferenceResult={inferenceResult} />
+                            <InjuryScatterPlot data={injuryStatistics} />
+                        </div>
                     </div>
                 </div>
             </div>

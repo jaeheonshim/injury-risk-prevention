@@ -77,7 +77,7 @@ function ChatbotWidget({ wizardData, inferenceResult }: { wizardData: WizardData
         }
 
         sendInitialMessage();
-    }, [wizardData, inferenceResult]);
+    }, []);
 
 
     useEffect(() => {
@@ -115,7 +115,7 @@ function ChatbotWidget({ wizardData, inferenceResult }: { wizardData: WizardData
     };
 
     return (
-        <div className="w-full h-165 flex flex-col">
+        <div className="w-270 h-165 flex flex-col">
             <style jsx>{`
                 .typing {
                     display: flex;

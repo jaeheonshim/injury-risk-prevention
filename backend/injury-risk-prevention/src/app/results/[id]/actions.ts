@@ -55,3 +55,17 @@ export async function runInference(wizardData: any) {
 
     return response.json();
 }
+
+export async function getInjuryStatistics(injuryTypes: string[]) {
+    const response = await fetch("http://localhost:5328/injuries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            injury_types: injuryTypes
+        }),
+    });
+
+    return response.json();
+}

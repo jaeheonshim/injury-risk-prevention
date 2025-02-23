@@ -20,7 +20,7 @@ export default function InjuryBarChart({ inferenceResult }: { inferenceResult: I
 
   const data = sortedEntries.map((entry) => ({
     name: entry[0],
-    pv: Number(entry[1]) * 100,
+    pv: Math.round(Number(entry[1]) * 10000) / 100,
   }));
 
   // Compute maximum value from the data for dynamic scaling.
