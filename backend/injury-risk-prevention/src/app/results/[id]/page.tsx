@@ -7,6 +7,23 @@ export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
 
     const wizardData = await getWizardData(id);
+    const positionMap: Record<string, string> = {
+        C: "Center",
+        LS: "Long Snapper",
+        LB: "Line Backer",
+        RB: "Running Back",
+        G: "Guard",
+        WR: "Wide Receiver",
+        CB: "Corner Back",
+        DE: "Defensive End",
+        TE: "Tight End",
+        S: "Safety",
+        DT: "Defensive Tackle",
+        K: "Kicker",
+        P: "Punter",
+        QB: "Quarterback",
+        T: "Offensive Tackle"
+    };
 
     if(!wizardData) {
         notFound();
@@ -35,10 +52,10 @@ export default async function ResultsPage({ params }: { params: any }) {
                         <p className="text-gray-700 mb-4">Age: {wizardData.age}</p>
                         <p className="text-gray-700 mb-4">Height: {Math.floor((wizardData.height ?? 0) / 12)} ft {(wizardData.height ?? 0) % 12}</p>
                         <p className="text-gray-700 mb-4">Weight: {wizardData.weight} lbs</p>
-                        <p className="text-gray-700 mb-4">Position: Wide Receiver</p>
-                        <p className="text-gray-700 mb-4">40-yard dash time: 4.5 seconds</p>
-                        <p className="text-gray-700 mb-4">Reps benched: 15</p>
-                        <p className="text-gray-700 mb-4">Vertical Jump: 30 inches</p>
+                        <p className="text-gray-700 mb-4">Position: {positionMap[wizardData.pos ?? ""]} ({wizardData.pos}) </p>
+                        <p className="text-gray-700 mb-4">40-yard dash time: {wizardData.forty} seconds</p>
+                        <p className="text-gray-700 mb-4">Reps benched: {wizardData.bench} rep(s)</p>
+                        <p className="text-gray-700 mb-4">Vertical Jump: {wizardData.vertical} inches</p>
                     </div>
                 </div>
             </div>
