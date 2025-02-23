@@ -101,6 +101,21 @@ const Results: React.FC = () => {
                     max-height: 400px;
                     overflow-y: auto;
                 }
+                .chat-history::-webkit-scrollbar {
+                    width: 12px;
+                }
+                .chat-history::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                    border-radius: 10px;
+                }
+                .chat-history::-webkit-scrollbar-thumb {
+                    background-color: #f97316; /* Orange color */
+                    border-radius: 10px;
+                    border: 3px solid #f1f1f1;
+                }
+                .chat-history::-webkit-scrollbar-thumb:hover {
+                    background-color: #ea580c; /* Darker orange color */
+                }
             `}</style>
 
             {/* Navigation Bar */}
