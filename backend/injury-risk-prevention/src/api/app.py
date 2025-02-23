@@ -21,10 +21,7 @@ def run_inference(wizard_data):
     ankle_injury_risk = min(1.0, height / 80)
 
     predictions = {
-        "KNEE": round(knee_injury_risk, 2),
-        "ANKLE": round(ankle_injury_risk, 2),
-        "HAMSTRING": 0.35,
-        "SHOULDER": 0.20
+        "SHOULDER": 1
     }
     return predictions
 

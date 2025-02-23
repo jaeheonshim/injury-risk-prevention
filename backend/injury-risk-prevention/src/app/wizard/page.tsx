@@ -109,7 +109,7 @@ export default function Wizard() {
                     setDirection(1);
                 }
             } else {
-                setWizardStage(WizardStage.AGE);
+                setWizardStage(WizardStage.NAME);
             }
         }).catch(e => {
             alert(e);
