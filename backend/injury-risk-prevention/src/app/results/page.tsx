@@ -16,7 +16,7 @@ const Results: React.FC = () => {
         async function fetchData() {
             try {
                 const result = await model.generateContent("give me a 2 sentence description of what a sprained ankle is");
-                const generatedText = result.response.text();
+                const generatedText = await result.response.text();
                 setText(generatedText);
             } catch (error) {
                 console.error("Error fetching AI-generated text:", error);
@@ -25,6 +25,10 @@ const Results: React.FC = () => {
         }
         fetchData();
     }, []);
+
+    const stripMarkdown = (text: string) => {
+        return text.replace(/(\*\*|__|\*|_|`|~|>|\[|\]|\(|\)|#|\+|-|!)/g, '');
+    };
 
     const handleChatSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,8 +39,8 @@ const Results: React.FC = () => {
 
         try {
             const result = await model.generateContent(chatInput);
-            const generatedText = result.response.text();
-            setChatHistory([...chatHistory, `User: ${chatInput}`, `AI: ${generatedText}`]);
+            const generatedText = await result.response.text();
+            setChatHistory([...chatHistory, `User: ${chatInput}`, `AI: ${stripMarkdown(generatedText)}`]);
         } catch (error) {
             console.error("Error fetching AI-generated text:", error);
             setChatHistory([...chatHistory, `User: ${chatInput}`, "AI: Failed to load response."]);
@@ -86,7 +90,7 @@ const Results: React.FC = () => {
                         {/* Right Column - Chatbot */}
                         <div className="w-1/2 pl-4">
                             <div className="mb-8 p-4 bg-gray-50 border rounded-md h-full flex flex-col">
-                                <h3 className="text-xl font-semibold mb-2">Chatbot</h3>
+                                <h3 className="text-xl font-semibold mb-2">Your Personal Assistant</h3>
                                 <div className="flex-grow overflow-y-auto mb-4">
                                     {chatHistory.map((message, index) => (
                                         <p key={index} className="text-gray-700 mb-2">{message}</p>
