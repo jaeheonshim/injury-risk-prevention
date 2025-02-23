@@ -46,17 +46,14 @@ model Injury {
   id       String      @id @default(uuid())
   type     InjuryType
   season   Int
-  player   WizardData  @relation("PlayerInjuries", fields: [playerId], references: [id])
+  player   WizardData  @relation("PlayerInjuries", fields: [playerId], references: [id], onDelete: Cascade)
   playerId String
 }
 
-// Here we set up the inference result model.
-// The predictions field is of type Json (available with Prisma for several providers, including SQLite).
-// The wizardDataId field is marked as @unique to enforce a one-to-one relationship.
 model InferenceResult {
   id            String     @id @default(uuid())
   predictions   Json       // A mapping: InjuryType -> Float
-  wizardData    WizardData @relation(fields: [wizardDataId], references: [id])
+  wizardData    WizardData @relation(fields: [wizardDataId], references: [id], onDelete: Cascade)
   wizardDataId  String     @unique
 }
 
