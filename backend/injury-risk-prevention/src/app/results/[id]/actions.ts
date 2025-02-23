@@ -25,3 +25,33 @@ export async function getInferenceResult(wizardDataId: string) {
 
     return inferenceResult;
 }
+
+export async function saveInferenceResult(wizardDataId: string, inferenceResult: any) {
+    await prisma.inferenceResult.upsert({
+        where: { wizardDataId: wizardDataId },
+        update: {
+            id: crypto.randomUUID(),
+            predictions: inferenceResult,
+            wizardDataId: wizardDataId
+        },
+        create: {
+            id: crypto.randomUUID(),
+            predictions: inferenceResult,
+            wizardDataId: wizardDataId
+        }
+    });
+
+    return inferenceResult;
+}
+
+export async function runInference(wizardData: any) {
+    const response = await fetch("/api/inference", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(wizardData),
+    });
+
+    return response.json();
+}

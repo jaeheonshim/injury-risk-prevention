@@ -1,9 +1,10 @@
 'use server';
 
 import { notFound } from "next/navigation";
-import { getInferenceResult, getWizardData } from "./actions";
+import { getInferenceResult, getWizardData, runInference } from "./actions";
 import ChatbotWidget from "./ChatbotWidget";
 import { positionMap } from "@/util/helpers";
+import InferenceWidget from "./InferenceWidget";
 
 export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
@@ -42,6 +43,7 @@ export default async function ResultsPage({ params }: { params: any }) {
 
             <div className="flex-grow flex flex-col items-center justify-center p-8">
                 Your results aren't quite ready yet. Please check back soon!
+                <InferenceWidget wizardData={wizardData} />
             </div>
         </div>
     }
