@@ -114,7 +114,7 @@ export default function Wizard() {
         saveWizardData(wizardState).then(() => {
             if (wizardStage) {
                 if (wizardStage + 1 >= WizardStage.COMPLETED) {
-                    router.push('/results'); // Navigate to the results page
+                    router.push(`/results/${wizardState.id}`); // Navigate to the results page
                 } else {
                     setWizardStage(wizardStage + 1);
                     setDirection(1);

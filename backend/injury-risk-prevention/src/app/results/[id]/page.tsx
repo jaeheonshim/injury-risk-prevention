@@ -1,28 +1,16 @@
-'use client';
+'use server';
 
-import React, { useEffect, useState } from 'react';
-import ReactMarkdown from "react-markdown";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { notFound } from "next/navigation";
+import { getWizardData } from "./actions";
 
-const genAI = new GoogleGenerativeAI("REDACTED");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+export default async function ResultsPage({ params }: { params: any }) {
+    const { id } = await params;
 
-const Results: React.FC = () => {
-    const [text, setText] = useState<string>("Loading...");
+    const wizardData = await getWizardData(id);
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const result = await model.generateContent("give me a 2 sentence description of what a sprained ankle is");
-                const generatedText = result.response.text();
-                setText(generatedText);
-            } catch (error) {
-                console.error("Error fetching AI-generated text:", error);
-                setText("Failed to load content.");
-            }
-        }
-        fetchData();
-    }, []);
+    if(!wizardData) {
+        notFound();
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -38,16 +26,15 @@ const Results: React.FC = () => {
 
                     {/* AI-Generated Markdown Content */}
                     <div className="text-gray-700 mb-8">
-                        Based on your inputs, here are your results. Please review them carefully and take the necessary steps to prevent injuries.
-                        <ReactMarkdown>{text}</ReactMarkdown>
+
                     </div>
 
                     {/* Summary Section */}
                     <div className="text-left">
                         <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
-                        <p className="text-gray-700 mb-4">Age: 25</p>
-                        <p className="text-gray-700 mb-4">Height: 6 ft 2 in</p>
-                        <p className="text-gray-700 mb-4">Weight: 180 lbs</p>
+                        <p className="text-gray-700 mb-4">Age: {wizardData.age}</p>
+                        <p className="text-gray-700 mb-4">Height: {Math.floor((wizardData.height ?? 0) / 12)} ft {(wizardData.height ?? 0) % 12}</p>
+                        <p className="text-gray-700 mb-4">Weight: {wizardData.weight} lbs</p>
                         <p className="text-gray-700 mb-4">Position: Wide Receiver</p>
                         <p className="text-gray-700 mb-4">40-yard dash time: 4.5 seconds</p>
                         <p className="text-gray-700 mb-4">Reps benched: 15</p>
@@ -58,5 +45,3 @@ const Results: React.FC = () => {
         </div>
     );
 };
-
-export default Results;
