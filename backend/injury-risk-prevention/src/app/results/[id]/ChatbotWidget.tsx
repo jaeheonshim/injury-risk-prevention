@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from "react-markdown";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useParams } from 'next/navigation';
+import { InferenceResult, WizardData } from '@prisma/client';
 
 const genAI = new GoogleGenerativeAI("REDACTED");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-const ChatbotWidget: React.FC = () => {
+function ChatbotWidget({ wizardData, inferenceResult }: { wizardData: WizardData, inferenceResult: InferenceResult }) {
     const { id } = useParams();
 
     const [text, setText] = useState<string>("Loading...");
@@ -111,15 +112,14 @@ const ChatbotWidget: React.FC = () => {
                     border-radius: 10px;
                 }
                 .chat-history::-webkit-scrollbar-thumb {
-                    background-color: #f97316; /* Orange color */
+                    background-color: #f97316;
                     border-radius: 10px;
                     border: 3px solid #f1f1f1;
                 }
                 .chat-history::-webkit-scrollbar-thumb:hover {
-                    background-color: #ea580c; /* Darker orange color */
+                    background-color: #ea580c;
                 }
             `}</style>
-
 
             <div className="w-full h-full pl-4">
                 <div className="mb-8 p-4 bg-gray-50 border rounded-md h-full flex flex-col">
@@ -163,6 +163,6 @@ const ChatbotWidget: React.FC = () => {
             </div>
         </div>
     );
-};
+}
 
 export default ChatbotWidget;

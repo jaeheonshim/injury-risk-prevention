@@ -9,13 +9,14 @@ import { positionMap } from "@/util/helpers";
 
 enum WizardStage {
     WELCOME = 0,
-    AGE = 1,
-    HEIGHT_WEIGHT = 2,
-    POSITION = 3,
-    COMBINE = 4,
-    PAST_INJURIES = 5,
-    REVIEW = 6,
-    COMPLETED = 7,
+    NAME = 1,
+    AGE = 2,
+    HEIGHT_WEIGHT = 3,
+    POSITION = 4,
+    COMBINE = 5,
+    PAST_INJURIES = 6,
+    REVIEW = 7,
+    COMPLETED = 8,
 }
 
 const inputClass = "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400";
@@ -28,7 +29,8 @@ const initialWizardState = {
     pos: null,
     forty: null,
     bench: null,
-    vertical: null
+    vertical: null,
+    name: null
 };
 
 export default function Wizard() {
@@ -66,6 +68,10 @@ export default function Wizard() {
     }
 
     function getWizardStage(wizardData: WizardData) {
+        if (!wizardData.name) {
+            return WizardStage.NAME;
+        }
+
         if (!wizardData.age) {
             return WizardStage.AGE;
         }
@@ -210,6 +216,22 @@ export default function Wizard() {
                                 <div className="text-center">
                                     <h2 className="text-2xl font-bold mb-4">Welcome to your very own personal assistant!</h2>
                                     <p className="mb-4">We are here to help you prevent injuries!</p>
+                                </div>
+                            )}
+
+                            {!loading && wizardStage === WizardStage.NAME && (
+                                <div className="mb-4">
+                                    <h3 className="text-xl font-semibold mb-2">What should we call you?</h3>
+                                    <label htmlFor="name" className="block mb-2">Enter your name:</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        min="0"
+                                        value={wizardState.name ?? ""}
+                                        onChange={(e) => setWizardStateProperty("name", e.target.value)}
+                                        required
+                                        className={inputClass}
+                                    />
                                 </div>
                             )}
 

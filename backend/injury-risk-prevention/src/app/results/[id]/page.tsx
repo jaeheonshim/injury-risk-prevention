@@ -93,7 +93,7 @@ export default async function ResultsPage({ params }: { params: any }) {
                         </div>
 
                         {/* Right Column - Chatbot */}
-                        <ChatbotWidget />
+                        <ChatbotWidget wizardData={wizardData} inferenceResult={inferenceResult} />
                     </div>
                 </div>
             </div>

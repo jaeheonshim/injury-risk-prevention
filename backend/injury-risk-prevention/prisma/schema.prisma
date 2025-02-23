@@ -30,6 +30,7 @@ enum Position {
 
 model WizardData {
   id              String           @id @default(uuid())
+  name            String?
   age             Int?
   height          Float?           // in
   weight          Float?           // lbs
