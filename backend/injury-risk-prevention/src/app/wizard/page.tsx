@@ -5,6 +5,7 @@ import { getWizardData, resetWizard, saveInjury, deleteInjury, saveWizardData } 
 import { Injury, InjuryType, Position, WizardData } from "@prisma/client";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { positionMap } from "@/util/helpers";
 
 enum WizardStage {
     WELCOME = 0,
@@ -16,24 +17,6 @@ enum WizardStage {
     REVIEW = 6,
     COMPLETED = 7,
 }
-
-const positionMap: Record<string, string> = {
-    C: "Center",
-    LS: "Long Snapper",
-    LB: "Line Backer",
-    RB: "Running Back",
-    G: "Guard",
-    WR: "Wide Receiver",
-    CB: "Corner Back",
-    DE: "Defensive End",
-    TE: "Tight End",
-    S: "Safety",
-    DT: "Defensive Tackle",
-    K: "Kicker",
-    P: "Punter",
-    QB: "Quarterback",
-    T: "Offensive Tackle"
-};
 
 const inputClass = "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400";
 

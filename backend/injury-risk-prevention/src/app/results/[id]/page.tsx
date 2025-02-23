@@ -2,6 +2,8 @@
 
 import { notFound } from "next/navigation";
 import { getWizardData } from "./actions";
+import ChatbotWidget from "./ChatbotWidget";
+import { positionMap } from "@/util/helpers";
 
 export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
@@ -20,25 +22,45 @@ export default async function ResultsPage({ params }: { params: any }) {
             </nav>
 
             {/* Main Content */}
-            <div className="flex-grow flex items-center justify-center">
-                <div className="w-full max-w-4xl p-8 bg-white rounded-lg shadow-lg text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-6">Your Injury Risk Assessment Results</h1>
+            <div className="flex-grow flex flex-col items-center justify-center p-8">
+                <div className="w-full max-w-6xl bg-white rounded-lg shadow-lg p-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-6">Your Injury Prediction Assessment</h1>
 
-                    {/* AI-Generated Markdown Content */}
-                    <div className="text-gray-700 mb-8">
-
+                    {/* Most Likely Injury Box */}
+                    <div className="mb-8 p-4 bg-gray-50 border rounded-md">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-4">Most Likely Body Part to Get Injured</h2>
+                        <p className="text-gray-700">Ankle</p>
                     </div>
 
-                    {/* Summary Section */}
-                    <div className="text-left">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
-                        <p className="text-gray-700 mb-4">Age: {wizardData.age}</p>
-                        <p className="text-gray-700 mb-4">Height: {Math.floor((wizardData.height ?? 0) / 12)} ft {(wizardData.height ?? 0) % 12}</p>
-                        <p className="text-gray-700 mb-4">Weight: {wizardData.weight} lbs</p>
-                        <p className="text-gray-700 mb-4">Position: Wide Receiver</p>
-                        <p className="text-gray-700 mb-4">40-yard dash time: 4.5 seconds</p>
-                        <p className="text-gray-700 mb-4">Reps benched: 15</p>
-                        <p className="text-gray-700 mb-4">Vertical Jump: 30 inches</p>
+                    <div className="flex">
+                        {/* Left Column */}
+                        <div className="w-1/2 pr-4">
+                            {/* Analysis Reason Box */}
+                            <div className="mb-8 p-4 bg-gray-50 border rounded-md">
+                                <h3 className="text-xl font-semibold mb-2">Your Stats</h3>
+                                <p className="text-gray-700 mb-4">Age: {wizardData.age}</p>
+                                <p className="text-gray-700 mb-4">Height: {Math.floor((wizardData.height ?? 0) / 12)} ft {(wizardData.height ?? 0) % 12}</p>
+                                <p className="text-gray-700 mb-4">Weight: {wizardData.weight} lbs</p>
+                                <p className="text-gray-700 mb-4">Position: {positionMap[wizardData.pos ?? ""]} ({wizardData.pos}) </p>
+                                <p className="text-gray-700 mb-4">40-yard dash time: {wizardData.forty} seconds</p>
+                                <p className="text-gray-700 mb-4">Reps benched: {wizardData.bench} rep(s)</p>
+                                <p className="text-gray-700 mb-4">Vertical Jump: {wizardData.vertical} inches</p>
+                            </div>
+
+                            <div className="mb-8 p-4 bg-gray-50 border rounded-md">
+                                <h3 className="text-xl font-semibold mb-2">Reason for Analysis</h3>
+                                <p className="text-gray-700">The reason for your analysis is based on your physical attributes and past injury history.</p>
+                            </div>
+
+                            {/* Preventable Measures Box */}
+                            <div className="mb-8 p-4 bg-gray-50 border rounded-md">
+                                <h3 className="text-xl font-semibold mb-2">Preventable Measures</h3>
+                                <p className="text-gray-700">To prevent injuries, ensure proper warm-up before exercises, maintain good posture, and follow a balanced training regimen.</p>
+                            </div>
+                        </div>
+
+                        {/* Right Column - Chatbot */}
+                        <ChatbotWidget />
                     </div>
                 </div>
             </div>
