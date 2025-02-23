@@ -102,7 +102,7 @@ def run_inference(wizard_data):
     
     # Concatenate all features into a single input array
     # Ensure the order of features matches the order used during training
-    input_features = np.concatenate([X_injury_counts, X_position, X_numerical], axis=1)
+    input_features = np.concatenate([X_numerical, X_injury_counts, X_position], axis=1)
     
     # Load the persisted model from joblib (this assumes the file exists at the given path)
     joblib_model = joblib.load('model.joblib')
