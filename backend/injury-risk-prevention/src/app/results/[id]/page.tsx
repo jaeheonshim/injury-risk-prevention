@@ -5,6 +5,7 @@ import { getInferenceResult, getWizardData, runInference } from "./actions";
 import ChatbotWidget from "./ChatbotWidget";
 import { positionMap } from "@/util/helpers";
 import InferenceWidget from "./InferenceWidget";
+import InjuryBarChart from "./InjuryBarChart";
 
 export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
@@ -56,7 +57,7 @@ export default async function ResultsPage({ params }: { params: any }) {
 
             {/* Main Content */}
             <div className="flex-grow flex flex-col items-center justify-center p-8">
-                <div className="w-full max-w-6xl bg-white rounded-lg shadow-lg p-8">
+                <div className="w-full max-w-8xl bg-white rounded-lg shadow-lg p-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-6">Your Injury Prediction Assessment</h1>
 
                     {/* Most Likely Injury Box */}
@@ -67,7 +68,12 @@ export default async function ResultsPage({ params }: { params: any }) {
 
                     <div className="flex">
                         {/* Left Column */}
-                        <div className="w-1/2 pr-4">
+                        <div className="w-2/3 pr-4">
+                            <div className="mb-8 p-4 bg-gray-50 border rounded-md">
+                                <h3 className="text-xl font-semibold mb-2">Most Likely Injuries</h3>
+                                <InjuryBarChart inferenceResult={inferenceResult} />
+                            </div>
+ 
                             {/* Analysis Reason Box */}
                             <div className="mb-8 p-4 bg-gray-50 border rounded-md">
                                 <h3 className="text-xl font-semibold mb-2">Your Stats</h3>

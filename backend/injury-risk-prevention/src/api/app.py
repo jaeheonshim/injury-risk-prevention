@@ -21,7 +21,9 @@ def run_inference(wizard_data):
     ankle_injury_risk = min(1.0, height / 80)
 
     predictions = {
-        "SHOULDER": 1
+        "SHOULDER": 1,
+        "KNEE": 0.7,
+        "ELBOW": 0.3
     }
     return predictions
 
