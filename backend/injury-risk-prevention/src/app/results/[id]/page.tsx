@@ -42,7 +42,6 @@ export default async function ResultsPage({ params }: { params: any }) {
             </nav>
 
             <div className="flex-grow flex flex-col items-center justify-center p-8">
-                Your results aren't quite ready yet. Please check back soon!
                 <InferenceWidget wizardData={wizardData} />
             </div>
         </div>
@@ -63,7 +62,7 @@ export default async function ResultsPage({ params }: { params: any }) {
                     {/* Most Likely Injury Box */}
                     <div className="mb-8 p-4 bg-gray-50 border rounded-md">
                         <h2 className="text-2xl font-bold text-gray-900 mb-4">Most Likely Body Part to Get Injured</h2>
-                        <p className="text-gray-700">Ankle</p>
+                        <p className="text-gray-700">{JSON.stringify(inferenceResult)}</p>
                     </div>
 
                     <div className="flex">
