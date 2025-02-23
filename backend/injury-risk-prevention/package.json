@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.22.0",
     "@prisma/client": "^6.4.1",
     "@tailwindcss/postcss": "^4.0.8",
     "framer-motion": "^12.4.7",

@@ -328,6 +328,7 @@ export default function Wizard() {
                                         type="number"
                                         placeholder="seconds"
                                         min="0"
+                                        step="0.01"
                                         value={wizardState.forty ?? ""}
                                         onChange={(e) => setWizardStateProperty("forty", Number(e.target.value))}
                                         className={inputClass}
