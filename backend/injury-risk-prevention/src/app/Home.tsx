@@ -12,7 +12,7 @@ const Home: React.FC = () => {
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             <nav className="w-full bg-orange-500 text-white py-6 px-8 flex justify-between items-center shadow-md">
-                <h1 className="text-3xl font-bold">Injury Risk Prevention</h1>
+                <h1 className="text-3xl font-bold">Injury Shield</h1>
                 <div>
                     {/* Add navigation links here if needed */}
                 </div>
@@ -35,9 +35,9 @@ const Home: React.FC = () => {
                     </div>
                     <div className="md:w-1/2 h-full flex items-center justify-center">
                         <div className="p-8">
-                            <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to Injury Risk Prevention</h1>
+                            <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to Injury Shield.</h1>
                             <p className="text-gray-700 mb-8">
-                                Dive into the exhilarating world of injury risk prevention with our dynamic and electrifying assessment tool designed exclusively for those who live for the rush of the game.
+                            Dominate the Field. Predict the Risks. Stay One Step Ahead. Injury Shield is a platform that helps you assess your injury risk and provides you with personalized recommendations to prevent injuries. Take the assessment today and start your journey to a healthier you.
                             </p>
                             <button
                                 onClick={navigateToWizard}
