@@ -97,9 +97,6 @@ def run_inference(wizard_data):
     for i, feature in enumerate(numerical_types):
         X_numerical[0][i] = wizard_data.get(feature, 0)
     
-    # Normalize numerical data using the pre-loaded scaler
-    X_numerical = scaler.transform(X_numerical)
-    
     # Concatenate all features into a single input array
     # Ensure the order of features matches the order used during training
     input_features = np.concatenate([X_numerical, X_injury_counts, X_position], axis=1)
@@ -117,6 +114,7 @@ def run_inference(wizard_data):
         output[injury] = float(predicted_output[0][i])
     
     return output
+
 
 
 @app.route('/inference', methods=['POST'])
