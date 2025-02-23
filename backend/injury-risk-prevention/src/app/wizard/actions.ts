@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma"
 import { Injury, WizardData } from "@prisma/client";
 import { cookies } from "next/headers"
-import Wizard from "./page";
 
 const WIZARD_SESSION_COOKIE = 'wizard_session_id';
 
