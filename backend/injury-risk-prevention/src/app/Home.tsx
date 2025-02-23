@@ -22,16 +22,18 @@ const Home: React.FC = () => {
                     <div className="md:w-1/2 h-full flex items-center justify-center">
                         <div className="p-8">
                             <picture className="block mb-4 fade-in">
-                                <source media="(max-width: 600px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/models1.jpg" />
-                                <source media="(min-width: 601px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/models1.jpg" />
-                                <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/models1.jpg" alt="model" className="w-full h-auto shadow-lg rounded-lg" />
+                                <source media="(max-width: 600px)" srcSet="https://res.cloudinary.com/dr2m0gcqj/image/upload/v1740298604/footballPic1_erzayk.jpg" />
+                                <source media="(min-width: 601px)" srcSet="https://res.cloudinary.com/dr2m0gcqj/image/upload/v1740298604/footballPic1_erzayk.jpg" />
+                                <img loading="lazy" decoding="async" src="https://res.cloudinary.com/dr2m0gcqj/image/upload/v1740298604/footballPic1_erzayk.jpg" alt="model" className="w-full h-auto shadow-lg rounded-lg" />
                             </picture>
-                            <picture className="block fade-in">
-                                <source media="(max-width: 600px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/shoes2.jpg" />
-                                <source media="(min-width: 601px)" srcSet="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/shoes2.jpg" />
-                                <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/ecommerce/shoes2.jpg" alt="shoes" className="w-full h-auto shadow-lg rounded-lg" />
+                            
+                            {/*<picture className="block fade-in">
+                                <source media="(max-width: 600px)" srcSet="https://res.cloudinary.com/dr2m0gcqj/image/upload/v1740298796/footballPic2_aidawx.jpg" />
+                                <source media="(min-width: 601px)" srcSet="https://res.cloudinary.com/dr2m0gcqj/image/upload/v1740298796/footballPic2_aidawx.jpg" />
+                                <img loading="lazy" decoding="async" src="https://res.cloudinary.com/dr2m0gcqj/image/upload/v1740298796/footballPic2_aidawx.jpg" alt="shoes" className="w-full h-auto shadow-lg rounded-lg" />
                             </picture>
-                        </div>
+                            */}
+                        </div>  
                     </div>
                     <div className="md:w-1/2 h-full flex items-center justify-center">
                         <div className="p-8">
