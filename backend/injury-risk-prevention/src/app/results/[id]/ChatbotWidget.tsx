@@ -7,7 +7,7 @@ import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 import { useParams } from 'next/navigation';
 import { InferenceResult, WizardData } from '@prisma/client';
 
-const genAI = new GoogleGenerativeAI("REDACTED");
+const genAI = new GoogleGenerativeAI("AIzaSyChlBdz4M4O3dwbRIrzg4cVg0COC9f1KpE");
 
 function ChatbotWidget({ wizardData, inferenceResult }: { wizardData: WizardData, inferenceResult: InferenceResult }) {
     const { id } = useParams();

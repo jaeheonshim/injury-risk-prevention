@@ -57,7 +57,7 @@ export default async function ResultsPage({ params }: { params: any }) {
     const sortedEntries = Object.entries(predictions).sort(([, a], [, b]) => b - a);
     const mostLikelyInjury = sortedEntries[0][0];
 
-    const genAI = new GoogleGenerativeAI("REDACTED");
+    const genAI = new GoogleGenerativeAI(process.env["GEMINI_API_KEY"]!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
 
     const reason = await model.generateContent(
