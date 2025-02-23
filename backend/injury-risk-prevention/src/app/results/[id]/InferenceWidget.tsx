@@ -27,7 +27,7 @@ export default function InferenceWidget({ wizardData }: { wizardData: any }) {
                 setTimeout(() => {
                     setLoading(false);
                     window.location.reload();
-                }, 4500);
+                }, 2000);
             }
         }
         runInference()

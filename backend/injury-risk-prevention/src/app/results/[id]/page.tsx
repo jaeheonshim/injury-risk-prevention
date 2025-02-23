@@ -7,6 +7,7 @@ import { positionMap } from "@/util/helpers";
 import InferenceWidget from "./InferenceWidget";
 import InjuryBarChart from "./InjuryBarChart";
 import { capitalizeString } from "@/util/util";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
@@ -53,6 +54,35 @@ export default async function ResultsPage({ params }: { params: any }) {
     const sortedEntries = Object.entries(predictions).sort(([, a], [, b]) => b - a);
     const mostLikelyInjury = sortedEntries[0][0];
 
+    const genAI = new GoogleGenerativeAI("REDACTED");
+    const model = genAI.getGenerativeModel({model: "gemini-1.5-flash"})
+
+    const reason = await model.generateContent(
+        `You are a sports injury predictor. Here are the stats of the player you are analyzing
+
+        - Age: ${wizardData.age}
+        - Height: ${wizardData.height} inches
+        - Weight: ${wizardData.weight} pounds
+        - 40-yard dash time: ${wizardData.forty} seconds
+        - Bench press reps (upper body strength): ${wizardData.bench} reps
+        - Vertical jump (lower body strength): ${wizardData.vertical} inches
+        - Past injuries: ${JSON.stringify((wizardData as any).injuries)}
+
+        The predicted most likely injury is ${mostLikelyInjury}. Please generate a short reason for analysis.`)
+    
+    const preventative = await model.generateContent(
+        `You are a sports injury predictor. Here are the stats of the player you are analyzing
+
+        - Age: ${wizardData.age}
+        - Height: ${wizardData.height} inches
+        - Weight: ${wizardData.weight} pounds
+        - 40-yard dash time: ${wizardData.forty} seconds
+        - Bench press reps (upper body strength): ${wizardData.bench} reps
+        - Vertical jump (lower body strength): ${wizardData.vertical} inches
+        - Past injuries: ${JSON.stringify((wizardData as any).injuries)}
+
+        The predicted most likely injury is ${mostLikelyInjury}. Please generate a short description of preventative measures. Do not list, just a short paragraph.`)
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             {/* Navigation Bar */}
@@ -93,13 +123,13 @@ export default async function ResultsPage({ params }: { params: any }) {
 
                             <div className="mb-8 p-4 bg-gray-50 border rounded-md">
                                 <h3 className="text-xl font-semibold mb-2">Reason for Analysis</h3>
-                                <p className="text-gray-700">The reason for your analysis is based on your physical attributes and past injury history.</p>
+                                <p className="text-gray-700">{reason.response.text()}</p>
                             </div>
 
                             {/* Preventable Measures Box */}
                             <div className="mb-8 p-4 bg-gray-50 border rounded-md">
                                 <h3 className="text-xl font-semibold mb-2">Preventable Measures</h3>
-                                <p className="text-gray-700">To prevent injuries, ensure proper warm-up before exercises, maintain good posture, and follow a balanced training regimen.</p>
+                                <p className="text-gray-700">{preventative.response.text()}</p>
                             </div>
                         </div>
 
