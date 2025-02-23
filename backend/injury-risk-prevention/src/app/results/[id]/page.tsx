@@ -9,6 +9,23 @@ export default async function ResultsPage({ params }: { params: any }) {
     const { id } = await params;
 
     const wizardData = await getWizardData(id);
+    const positionMap: Record<string, string> = {
+        C: "Center",
+        LS: "Long Snapper",
+        LB: "Line Backer",
+        RB: "Running Back",
+        G: "Guard",
+        WR: "Wide Receiver",
+        CB: "Corner Back",
+        DE: "Defensive End",
+        TE: "Tight End",
+        S: "Safety",
+        DT: "Defensive Tackle",
+        K: "Kicker",
+        P: "Punter",
+        QB: "Quarterback",
+        T: "Offensive Tackle"
+    };
 
     if(!wizardData) {
         notFound();
